@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_page">
+
+    <include layout="@layout/layout_toolbar2" />
+
+    <RelativeLayout
+        android:id="@+id/user_detail_rly_head"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background_white_selector"
+        android:clickable="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="头像"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/user_detail_next1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/next2"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_detail_civ_head"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toLeftOf="@+id/user_detail_next1"
+            android:src="@mipmap/yonghu"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_detail_rly_name"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/button_background_white_selector"
+        android:clickable="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昵称"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/user_detail_next2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/next2"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/user_detail_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/user_detail_next2"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="24K纯帅"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_detail_rly_phone"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background_white_selector"
+        android:clickable="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="绑定手机"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/user_detail_tv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:text="暂未绑定"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -9,13 +9,47 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module_login.LoginActivity">
+        <activity android:name=".apps.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".apps.HomeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.UserDetailActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.NameSetActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.BindPhoneActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.LoginActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.RegisterActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.FindPasswordActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.SettingActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.ResetPasswordActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.AboutUsActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.FeedbackActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

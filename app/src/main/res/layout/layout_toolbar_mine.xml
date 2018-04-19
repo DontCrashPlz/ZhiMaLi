@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/bj">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/mine_civ_yonghu"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/yonghu"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/mine_tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="立即登录"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/textSize_15"
+        app:layout_constraintTop_toTopOf="@+id/mine_civ_yonghu"
+        app:layout_constraintBottom_toBottomOf="@+id/mine_civ_yonghu"
+        app:layout_constraintLeft_toRightOf="@+id/mine_civ_yonghu"
+        android:layout_marginLeft="7dp"
+        android:padding="3dp"
+        android:clickable="true"/>
+
+    <ImageView
+        android:id="@+id/mine_iv_user_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/next"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mine_civ_yonghu"
+        app:layout_constraintBottom_toBottomOf="@+id/mine_civ_yonghu"
+        android:layout_marginRight="15dp"
+        android:clickable="true"/>
+
+</android.support.constraint.ConstraintLayout>

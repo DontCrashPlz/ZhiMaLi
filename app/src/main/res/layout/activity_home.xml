@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_page">
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/home_fly_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="49dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@color/background_toolbar"
+        android:layout_gravity="bottom">
+
+        <RadioGroup
+            android:id="@+id/home_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <RadioButton
+                android:id="@+id/home_rbtn_homepage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="首页"
+                android:textSize="@dimen/textSize_12"
+                android:textColor="#555555"
+                android:drawableTop="@drawable/home_tab_homepage_icon_selector"/>
+
+            <RadioButton
+                android:id="@+id/home_rbtn_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="视频"
+                android:textSize="@dimen/textSize_12"
+                android:textColor="#555555"
+                android:drawableTop="@drawable/home_tab_video_icon_selector"/>
+
+            <RadioButton
+                android:id="@+id/home_rbtn_mine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="我的"
+                android:textSize="@dimen/textSize_12"
+                android:textColor="#555555"
+                android:drawableTop="@drawable/home_tab_mine_icon_selector"/>
+        </RadioGroup>
+
+    </FrameLayout>
+
+</FrameLayout>

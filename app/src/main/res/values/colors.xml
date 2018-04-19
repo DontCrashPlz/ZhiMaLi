@@ -4,10 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-
-
     <color name="background_page">#efeff4</color>
     <color name="background_toolbar">#f7f7f7</color>
+    <color name="background_toolbar_blue">#3e90fd</color>
     <color name="background_button_blue">#3388fd</color>
     <color name="textcolor_black">#332d30</color>
     <color name="textcolot_hint_gary">#ababab</color>
