@@ -3,6 +3,7 @@
     package="com.zhimali.zheng">
 
     <application
+        android:name=".apps.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -48,6 +49,27 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".module_mine.FeedbackActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.BusinessActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.FansActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.HelpActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.NoticeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.NoticeDetailActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.TiXianActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.YueBiActivity"
             android:screenOrientation="portrait"/>
 
     </application>

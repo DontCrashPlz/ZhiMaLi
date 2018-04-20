@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/item_yuebi_fans_head"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@mipmap/yonghu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/item_yuebi_fans_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户名"
+        android:textColor="#666666"
+        android:textSize="@dimen/textSize_11"
+        app:layout_constraintTop_toTopOf="@+id/item_yuebi_fans_head"
+        app:layout_constraintBottom_toBottomOf="@+id/item_yuebi_fans_head"
+        app:layout_constraintLeft_toRightOf="@+id/item_yuebi_fans_head"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/item_yuebi_fans_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="文章标题"
+        android:textSize="@dimen/textSize_15"
+        android:textColor="@color/textcolor_black"
+        app:layout_constraintTop_toBottomOf="@+id/item_yuebi_fans_username"
+        app:layout_constraintLeft_toLeftOf="@+id/item_yuebi_fans_username"
+        app:layout_constraintRight_toLeftOf="@+id/item_yuebi_fans_text"
+        android:layout_marginTop="10dp"
+        android:paddingRight="10dp"
+        android:lines="1"
+        android:ellipsize="end"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/yd"
+        app:layout_constraintTop_toTopOf="@+id/item_yuebi_fans_title"
+        app:layout_constraintBottom_toBottomOf="@+id/item_yuebi_fans_title"
+        app:layout_constraintRight_toLeftOf="@+id/item_yuebi_fans_title"
+        android:layout_marginRight="6dp"/>
+
+    <TextView
+        android:id="@+id/item_yuebi_fans_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2000-01-01 00:00"
+        android:textColor="@color/textcolot_hint_gary"
+        android:textSize="@dimen/textSize_11"
+        app:layout_constraintLeft_toLeftOf="@+id/item_yuebi_fans_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_yuebi_fans_title"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/item_yuebi_fans_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+99"
+        android:textSize="@dimen/textSize_18"
+        android:textColor="#ff615d"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/item_yuebi_fans_text" />
+
+    <TextView
+        android:id="@+id/item_yuebi_fans_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="阅币收益 "
+        android:textSize="@dimen/textSize_12"
+        android:textColor="@color/textcolot_hint_gary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_yuebi_fans_detail" />
+
+</android.support.constraint.ConstraintLayout>
