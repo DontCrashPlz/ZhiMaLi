@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Zheng on 2017/12/14.
  */
 
-public class RetrofitApplication extends Application {
+public class RetrofitApplication extends BaseApplication {
 
     public static final String IP_ADDRESS="ip_address";
     public static final String PORT_NUMBER="port_number";

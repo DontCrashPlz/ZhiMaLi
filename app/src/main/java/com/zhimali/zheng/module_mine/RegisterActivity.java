@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.http.Network;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -64,11 +66,46 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
             }
             case R.id.register_btn_get:{
-                showShortToast("获取验证码");
+                String mobileNum= mPhoneEt.getText().toString();
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                }else {
+                    Network.getInstance().getYanZhengMa(this, mobileNum);
+                }
                 break;
             }
             case R.id.register_btn_register:{
-                showShortToast("注册");
+                String mobileNum= mPhoneEt.getText().toString();
+                String yanZhengMa= mYanZhengMaEt.getText().toString();
+                String password= mPasswordEt.getText().toString();
+                String password2= mPasswordEt2.getText().toString();
+                String inviteCode= mInviteCodeEt.getText().toString();
+
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                    return;
+                }
+
+                if (yanZhengMa== null || yanZhengMa.length()== 0){
+                    showShortToast("请输入您的验证码");
+                    return;
+                }
+
+                if (password== null || password.length()== 0){
+                    showShortToast("请输入您的密码");
+                    return;
+                }
+
+                if (password2== null || password2.length()== 0){
+                    showShortToast("请确认您的密码");
+                    return;
+                }
+
+                if (!password.equals(password2)){
+                    showShortToast("您两次输入的密码不一致");
+                    return;
+                }
+
                 break;
             }
             default:
