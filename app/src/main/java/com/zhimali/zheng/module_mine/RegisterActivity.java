@@ -9,8 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.RegisterEntity;
+import com.zhimali.zheng.bean.YanZhengMaEntity;
 import com.zhimali.zheng.http.Network;
 
 /**
@@ -105,6 +110,35 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     showShortToast("您两次输入的密码不一致");
                     return;
                 }
+
+                LogUtil.d("mobileNum", mobileNum);
+                LogUtil.d("yanZhengMa", yanZhengMa);
+                LogUtil.d("password", password);
+                LogUtil.d("inviteCode", inviteCode);
+
+                Network.getInstance().doRegister(
+                        mobileNum,
+                        yanZhengMa,
+                        password,
+                        inviteCode,
+                        new IAsyncLoadListener<RegisterEntity>() {
+                            @Override
+                            public void onSuccess(RegisterEntity registerEntity) {
+                                showShortToast(registerEntity.getMsg());
+                                if (registerEntity.getCode()== 0){
+                                    LogUtil.d("register data", registerEntity.getData());
+                                    SharedPrefUtils.put(
+                                            getRealContext(),
+                                            MyApplication.TOKEN_TAG,
+                                            registerEntity.getData());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                showShortToast(msg);
+                            }
+                        });
 
                 break;
             }

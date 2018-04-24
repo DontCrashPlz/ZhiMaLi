@@ -22,15 +22,15 @@ public interface ApiService {
 //    http://www.52zhimali.com/index.php?m=mobile&c=member&a=resetPassword
 
     //http://www.52zhimali.com/index.php?m=mobile&c=member&a=verify
-    @GET
+    @GET("/index.php")
     Call<YanZhengMaEntity> getYanZhengMa(@QueryMap Map<String, String> params);
 
     //http://www.52zhimali.com/index.php?m=mobile&c=member&a=register
-    @POST
+    @GET("/index.php")
     Call<RegisterEntity> doRegister(@QueryMap Map<String, String> params);
 
     //http://www.52zhimali.com/index.php?m=mobile&c=member&a=login
-    @GET
+    @GET("/index.php")
     Call<LoginEntity> doLogin(@QueryMap Map<String, String> params);
 
 }

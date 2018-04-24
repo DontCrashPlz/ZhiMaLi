@@ -14,17 +14,17 @@ import java.io.File;
 
 public class BaseApplication extends Application {
 
-    private static BaseApplication mSingleInstance;
-
-    public static BaseApplication getInstance(){
-        return mSingleInstance;
-    }
+//    private static BaseApplication mSingleInstance;
+//
+//    public static BaseApplication getInstance(){
+//        return mSingleInstance;
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mSingleInstance= this;
+//        mSingleInstance= this;
 
         //init MyUncatchExceptionHandler
         MyUncatchExceptionHandler mUncatchExceptionHandler= MyUncatchExceptionHandler.getInstance();
