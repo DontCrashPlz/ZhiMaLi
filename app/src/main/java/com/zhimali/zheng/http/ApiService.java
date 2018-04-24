@@ -8,6 +8,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 
@@ -17,20 +18,65 @@ import retrofit2.http.QueryMap;
 
 public interface ApiService {
 
-//    http://www.52zhimali.com/index.php?m=mobile&c=member&a=wechatLogin
-//    http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindMobile
-//    http://www.52zhimali.com/index.php?m=mobile&c=member&a=resetPassword
-
-    //http://www.52zhimali.com/index.php?m=mobile&c=member&a=verify
+    //1 http://www.52zhimali.com/index.php?m=mobile&c=member&a=verify
     @GET("/index.php")
     Call<YanZhengMaEntity> getYanZhengMa(@QueryMap Map<String, String> params);
 
-    //http://www.52zhimali.com/index.php?m=mobile&c=member&a=register
+    //2 http://www.52zhimali.com/index.php?m=mobile&c=member&a=register
     @GET("/index.php")
     Call<RegisterEntity> doRegister(@QueryMap Map<String, String> params);
 
-    //http://www.52zhimali.com/index.php?m=mobile&c=member&a=login
+    //3 http://www.52zhimali.com/index.php?m=mobile&c=member&a=login
     @GET("/index.php")
     Call<LoginEntity> doLogin(@QueryMap Map<String, String> params);
+
+    //4 http://www.52zhimali.com/index.php?m=mobile&c=member&a=wechatLogin
+    @GET("/index.php")
+    Call<LoginEntity> doWechatLogin(@QueryMap Map<String, String> params);
+
+    //5 http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindMobile
+    @GET("/index.php")
+    Call bindMobile(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //6 http://www.52zhimali.com/index.php?m=mobile&c=member&a=resetPassword
+    @GET("/index.php")
+    Call resetPassword(@QueryMap Map<String, String> params);
+
+    //7 http://www.52zhimali.com/index.php?m=mobile&c=member&a=information
+    @GET("/index.php")
+    Call getUserInfo(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //8 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editAvatar
+    //设置头像请求方式为：multipart/form-data, 客户端需对图片预先进行无损压缩
+    @GET("/index.php")
+    Call changeUserHead(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //9 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editMember
+    @GET("/index.php")
+    Call changeUserName(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //10 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editPassword
+    @GET("/index.php")
+    Call changePassword(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //11 http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindInviteCode
+    @GET("/index.php")
+    Call bindInviteCode(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //12 http://www.52zhimali.com/index.php?m=mobile&c=member&a=fans
+    @GET("/index.php")
+    Call getFansList(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //13 http://www.52zhimali.com/index.php?m=mobile&c=member&a=withdraw
+    @GET("/index.php")
+    Call applyTiXian(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //14 http://www.52zhimali.com/index.php?m=mobile&c=member&a=walletRecord
+    @GET("/index.php")
+    Call getYueBiHistory(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //15 http://www.52zhimali.com/index.php?m=mobile&c=member&a=signin
+    @GET("/index.php")
+    Call doSignIn(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
 }

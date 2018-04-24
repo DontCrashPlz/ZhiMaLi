@@ -8,6 +8,7 @@ import com.zheng.zchlibrary.https.NovateCookieManger;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
 
@@ -122,6 +123,37 @@ public class Network {
             @Override
             public void onFailure(Call<RegisterEntity> call, Throwable t) {
                 LogUtil.d("doRegister onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    public void doLogin(String mobile,
+                        String password,
+                        final IAsyncLoadListener<LoginEntity> listener){
+        Map<String, String> params= new HashMap<>();
+        params.put(NetParams.PARAM1, NetParams.VALUE1);
+        params.put(NetParams.PARAM2, NetParams.VALUE2);
+        params.put(NetParams.PARAM_TAG, NetParams.TAG_LOGIN);
+        params.put("mobile", mobile);
+        params.put("password", password);
+        Call<LoginEntity> loginCall= apiService.doLogin(params);
+        loginCall.enqueue(new Callback<LoginEntity>() {
+            @Override
+            public void onResponse(Call<LoginEntity> call, Response<LoginEntity> response) {
+                LogUtil.d("doLogin response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("doLogin response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("doLogin response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginEntity> call, Throwable t) {
+                LogUtil.d("doLogin onFailure", t.toString());
                 listener.onFailure(t.toString());
             }
         });
