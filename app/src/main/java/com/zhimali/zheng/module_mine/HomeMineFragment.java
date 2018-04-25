@@ -1,8 +1,10 @@
 package com.zhimali.zheng.module_mine;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zheng.zchlibrary.apps.BaseFragment;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.UserEntity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,7 +62,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
 
     private void initUI(View mView) {
         mUserHeadCiv= mView.findViewById(R.id.mine_civ_yonghu);
-        mUserHeadCiv.setOnClickListener(this);
+//        mUserHeadCiv.setOnClickListener(this);
         mUserNameTv= mView.findViewById(R.id.mine_tv_username);
         mUserNameTv.setOnClickListener(this);
         mUserDetailIv= mView.findViewById(R.id.mine_iv_user_detail);
@@ -85,20 +91,20 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         int vId= v.getId();
         switch (vId){
-            case R.id.mine_civ_yonghu:{
-                if (!isSignIn()){
-                    showShortToast("请先登录");
-                    return;
-                }
-                startActivity(new Intent(getRealContext(), UserDetailActivity.class));
-                break;
-            }
-            case R.id.mine_tv_username:{
-//                if (isSignIn()){
-//                    showShortToast("您已登录");
+//            case R.id.mine_civ_yonghu:{
+//                if (!isSignIn()){
+//                    showShortToast("请先登录");
 //                    return;
 //                }
-                startActivity(new Intent(getRealContext(), LoginActivity.class));
+//                startActivity(new Intent(getRealContext(), UserDetailActivity.class));
+//                break;
+//            }
+            case R.id.mine_tv_username:{
+                if (MyApplication.getInstance().isHadUser()){//如果已登录，提示一下
+                    showShortToast("您已登录");
+                }else {//如果没有登录，跳转到登录界面
+                    startActivity(new Intent(getRealContext(), LoginActivity.class));
+                }
                 break;
             }
             case R.id.mine_iv_user_detail:{
@@ -114,7 +120,15 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_qiandao:{
-
+                if (MyApplication.getInstance().isHadUser()){
+                    if (MyApplication.appUser.getSigned()== 0){
+                        showShortToast("签到");
+                    }else if (MyApplication.appUser.getSigned()== 1){
+                        showShortToast("您已签到");
+                    }
+                }else {//如果没有登录，跳转到登录界面
+                    showShortToast("请先登录");
+                }
                 break;
             }
             case R.id.mine_rly_notice:{
@@ -143,12 +157,38 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
-    /**
-     * 返回目前是否已登录
-     * @return
-     */
-    private boolean isSignIn(){
-        return true;
-    }
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        if (MyApplication.getInstance().isHadUser()){
+            Glide.with(this)
+                    .load(MyApplication.appUser.getAvatar())
+                    .asBitmap()
+                    .placeholder(R.mipmap.yonghu)
+                    .error(R.mipmap.yonghu)
+                    .into(mUserHeadCiv);
+            mUserNameTv.setText(MyApplication.appUser.getNickname());
+            mFansBtn.setText("粉丝" + MyApplication.appUser.getFans());
+            mYueBiBtn.setText("阅币" + MyApplication.appUser.getCoin());
+            if (MyApplication.appUser.getSigned()== 0){
+                mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        null,
+                        getResources().getDrawable(R.mipmap.qd),
+                        null,
+                        null);
+            }else if (MyApplication.appUser.getSigned()== 1){
+                mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        null,
+                        getResources().getDrawable(R.mipmap.qdd),
+                        null,
+                        null);
+            }
+        }else {
+            mUserHeadCiv.setImageResource(R.mipmap.yonghu);
+            mUserNameTv.setText("立即登录");
+            mFansBtn.setText("粉丝");
+            mYueBiBtn.setText("阅币");
+        }
+    }
 }

@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -68,10 +70,18 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             }
             case R.id.setting_tv_zhanghao:{
+                if (!MyApplication.getInstance().isHadUser()){
+                    showShortToast("请先登录");
+                    return;
+                }
                 startActivity(new Intent(getRealContext(), UserDetailActivity.class));
                 break;
             }
             case R.id.setting_tv_password:{
+                if (!MyApplication.getInstance().isHadUser()){
+                    showShortToast("请先登录");
+                    return;
+                }
                 startActivity(new Intent(getRealContext(), ResetPasswordActivity.class));
                 break;
             }
@@ -88,7 +98,18 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             }
             case R.id.setting_btn_logout:{
-                showShortToast("退出当前帐号");
+                if (MyApplication.getInstance().isHadUser()){//如果已登录，退出登录
+                    SharedPrefUtils.remove(this, MyApplication.TOKEN_TAG);
+                    if (MyApplication.getInstance().isHadToken()){
+                        showShortToast("退出登录失败");
+                    }else {
+                        showShortToast("退出登录成功");
+                        MyApplication.appToken= null;
+                        MyApplication.appUser= null;
+                    }
+                }else {//如果没有登录，弹窗提示
+                    showShortToast("您还没有登录");
+                }
                 break;
             }
             default:

@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -9,7 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.http.Network;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -59,11 +65,53 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                 break;
             }
             case R.id.bind_phone_btn_get:{
-                showShortToast("获取验证码");
+                String mobileNum= mPhoneEt.getText().toString();
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                }else {
+                    Network.getInstance().getYanZhengMa(this, mobileNum);
+                }
                 break;
             }
             case R.id.bind_phone_btn_bind:{
-                showShortToast("绑定号码");
+                final String mobileNum= mPhoneEt.getText().toString();
+                String yanZhengMa= mYanZhengMaEt.getText().toString();
+
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                    return;
+                }
+
+                if (yanZhengMa== null || yanZhengMa.length()== 0){
+                    showShortToast("请输入您的验证码");
+                    return;
+                }
+
+                LogUtil.d("mobileNum", mobileNum);
+                LogUtil.d("yanZhengMa", yanZhengMa);
+
+                Network.getInstance().bindMobile(
+                        MyApplication.appToken,
+                        mobileNum,
+                        yanZhengMa,
+                        new IAsyncLoadListener<BindMobileEntity>() {
+                            @Override
+                            public void onSuccess(BindMobileEntity bindMobileEntity) {
+                                showShortToast(bindMobileEntity.getMsg());
+                                if (bindMobileEntity.getCode()== 0){
+                                    Intent intent= new Intent();
+                                    intent.putExtra(UserDetailActivity.DATA_TAG_MOBILE, mobileNum);
+                                    setResult(UserDetailActivity.resultCode_mobile, intent);
+                                    finish();
+                                    MyApplication.getInstance().loadUser();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                showShortToast(msg);
+                            }
+                        });
                 break;
             }
             default:

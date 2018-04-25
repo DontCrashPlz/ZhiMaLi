@@ -9,7 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.ChangePasswordEntity;
+import com.zhimali.zheng.http.Network;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -62,11 +67,70 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
                 break;
             }
             case R.id.find_password_btn_get:{
-                showShortToast("获取验证码");
+                String mobileNum= mPhoneEt.getText().toString();
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                }else {
+                    Network.getInstance().getYanZhengMa(this, mobileNum);
+                }
                 break;
             }
             case R.id.find_password_btn_confirm:{
-                showShortToast("确认更改");
+                String mobileNum= mPhoneEt.getText().toString();
+                String yanZhengMa= mYanZhengMaEt.getText().toString();
+                String password= mPasswordEt.getText().toString();
+                String password2= mPasswordEt2.getText().toString();
+
+                if (mobileNum== null || mobileNum.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                    return;
+                }
+
+                if (yanZhengMa== null || yanZhengMa.length()== 0){
+                    showShortToast("请输入您的验证码");
+                    return;
+                }
+
+                if (password== null || password.length()== 0){
+                    showShortToast("请输入您的密码");
+                    return;
+                }
+
+                if (password2== null || password2.length()== 0){
+                    showShortToast("请确认您的密码");
+                    return;
+                }
+
+                if (!password.equals(password2)){
+                    showShortToast("您两次输入的密码不一致");
+                    return;
+                }
+
+                LogUtil.d("mobileNum", mobileNum);
+                LogUtil.d("yanZhengMa", yanZhengMa);
+                LogUtil.d("password", password);
+
+                Network.getInstance().changePassword(
+                        MyApplication.appToken,
+                        mobileNum,
+                        password,
+                        password2,
+                        yanZhengMa,
+                        new IAsyncLoadListener<ChangePasswordEntity>() {
+                            @Override
+                            public void onSuccess(ChangePasswordEntity changePasswordEntity) {
+                                showShortToast(changePasswordEntity.getMsg());
+                                if (changePasswordEntity.getCode()== 0){
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                showShortToast(msg);
+                            }
+                        });
+
                 break;
             }
             default:

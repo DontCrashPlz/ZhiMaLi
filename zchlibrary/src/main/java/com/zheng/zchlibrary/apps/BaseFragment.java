@@ -15,7 +15,7 @@ import com.zheng.zchlibrary.utils.LogUtil;
 
 public class BaseFragment extends Fragment implements IBaseView {
 
-    private final String fragmentTag= this.getClass().getSimpleName();
+    public final String fragmentTag= this.getClass().getSimpleName();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -1,7 +1,12 @@
 package com.zhimali.zheng.http;
 
+import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.bean.ChangePasswordEntity;
+import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.LoginEntity;
+import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
+import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
 
 import java.util.Map;
@@ -36,15 +41,15 @@ public interface ApiService {
 
     //5 http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindMobile
     @GET("/index.php")
-    Call bindMobile(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<BindMobileEntity> bindMobile(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //6 http://www.52zhimali.com/index.php?m=mobile&c=member&a=resetPassword
     @GET("/index.php")
-    Call resetPassword(@QueryMap Map<String, String> params);
+    Call<FindPasswordEntity> resetPassword(@QueryMap Map<String, String> params);
 
     //7 http://www.52zhimali.com/index.php?m=mobile&c=member&a=information
     @GET("/index.php")
-    Call getUserInfo(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<UserResponseEntity> getUserInfo(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //8 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editAvatar
     //设置头像请求方式为：multipart/form-data, 客户端需对图片预先进行无损压缩
@@ -53,11 +58,11 @@ public interface ApiService {
 
     //9 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editMember
     @GET("/index.php")
-    Call changeUserName(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<NameSetEntity> changeUserName(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //10 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editPassword
     @GET("/index.php")
-    Call changePassword(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<ChangePasswordEntity> changePassword(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //11 http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindInviteCode
     @GET("/index.php")

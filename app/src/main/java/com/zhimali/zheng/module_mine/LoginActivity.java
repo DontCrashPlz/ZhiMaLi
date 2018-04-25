@@ -11,7 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.LoginEntity;
+import com.zhimali.zheng.http.Network;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -75,7 +81,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             }
             case R.id.login_btn_login:{
-                showShortToast("登录");
+                String username= mUserNemEt.getText().toString();
+                String password= mPasswordEt.getText().toString();
+                if (username== null || username.length()!= 11){
+                    showShortToast("请输入11位手机号码");
+                    return;
+                }
+                if (password== null || password.length()== 0){
+                    showShortToast("请输入密码");
+                    return;
+                }
+                Network.getInstance().doLogin(
+                        username,
+                        password,
+                        new IAsyncLoadListener<LoginEntity>() {
+                            @Override
+                            public void onSuccess(LoginEntity loginEntity) {
+                                showShortToast(loginEntity.getMsg());
+                                if (loginEntity.getCode()== 0){
+                                    LogUtil.d("register data", loginEntity.getData());
+                                    MyApplication.getInstance().setToken(loginEntity.getData());
+                                    MyApplication.getInstance().loadUser();
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                showShortToast(msg);
+                            }
+                        });
                 break;
             }
             case R.id.login_btn_register:{

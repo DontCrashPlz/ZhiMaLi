@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.apps.MyApplication;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -18,6 +20,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class UserDetailActivity extends BaseActivity implements View.OnClickListener {
+
+    private final int requestCode_head= 0x01;
+    private final int requestCode_name= 0x02;
+    private final int requestCode_mobile= 0x03;
+    public static final int resultCode_head= 0x04;
+    public static final int resultCode_name= 0x05;
+    public static final int resultCode_mobile= 0x06;
+    public static final String DATA_TAG_HEAD= "head";
+    public static final String DATA_TAG_NAME= "name";
+    public static final String DATA_TAG_MOBILE= "mobile";
 
     private ImageView mBackBtn;
     private TextView mTitleTv;
@@ -55,8 +67,16 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         mPhoneRly.setOnClickListener(this);
 
         mUserHeadCiv= findViewById(R.id.user_detail_civ_head);
+        Glide.with(this)
+                .load(MyApplication.appUser.getAvatar())
+                .asBitmap()
+                .placeholder(R.mipmap.yonghu)
+                .error(R.mipmap.yonghu)
+                .into(mUserHeadCiv);
         mNameTv= findViewById(R.id.user_detail_tv_name);
+        mNameTv.setText(MyApplication.appUser.getNickname());
         mPhoneTv= findViewById(R.id.user_detail_tv_phone);
+        mPhoneTv.setText(MyApplication.appUser.getMobile());
     }
 
     @Override
@@ -72,13 +92,31 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 break;
             }
             case R.id.user_detail_rly_name:{
-                startActivity(new Intent(getRealContext(), NameSetActivity.class));
+                startActivityForResult(
+                        new Intent(getRealContext(), NameSetActivity.class),
+                        requestCode_name);
                 break;
             }
             case R.id.user_detail_rly_phone:{
-                startActivity(new Intent(getRealContext(), BindPhoneActivity.class));
+                startActivityForResult(
+                        new Intent(getRealContext(), BindPhoneActivity.class),
+                        requestCode_mobile);
                 break;
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode== requestCode_head && resultCode== resultCode_head){
+
+        }
+        if (requestCode== requestCode_name && resultCode== resultCode_name){
+            mNameTv.setText(data.getStringExtra(DATA_TAG_NAME));
+        }
+        if (requestCode== requestCode_mobile && resultCode== resultCode_mobile){
+            mPhoneTv.setText(data.getStringExtra(DATA_TAG_MOBILE));
         }
     }
 }
