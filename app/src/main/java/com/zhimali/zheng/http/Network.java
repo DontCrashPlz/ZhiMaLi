@@ -11,10 +11,14 @@ import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.BindMobileEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
+import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
+import com.zhimali.zheng.bean.SignInEntity;
+import com.zhimali.zheng.bean.TiXianEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
+import com.zhimali.zheng.bean.WechatLoginEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
 
 import java.util.HashMap;
@@ -83,6 +87,11 @@ public class Network {
         return baseParamMap;
     }
 
+    /**
+     * 1 获取验证码
+     * @param context
+     * @param mobile
+     */
     public void getYanZhengMa(final Context context, String mobile){
         Map<String, String> params=
                 getBaseParamMap(NetParams.TAG_YANZHENGMA);
@@ -101,6 +110,14 @@ public class Network {
         });
     }
 
+    /**
+     * 2 注册
+     * @param mobile
+     * @param yanZhengMa
+     * @param password
+     * @param inviteCode
+     * @param listener
+     */
     public void doRegister(String mobile,
                            String yanZhengMa,
                            String password,
@@ -137,6 +154,12 @@ public class Network {
         });
     }
 
+    /**
+     * 3 登录
+     * @param mobile
+     * @param password
+     * @param listener
+     */
     public void doLogin(String mobile,
                         String password,
                         final IAsyncLoadListener<LoginEntity> listener){
@@ -166,31 +189,28 @@ public class Network {
         });
     }
 
-    public void getUserInfo(String token, final IAsyncLoadListener<UserResponseEntity> listener){
+    /**
+     * 4 微信登录
+     * @param openid
+     * @param avatar
+     * @param nickname
+     * @param listener
+     */
+    public void doWechatLogin(String openid,
+                              String avatar,
+                              String nickname,
+                              IAsyncLoadListener<WechatLoginEntity> listener){
         Map<String, String> params=
-                getBaseParamMap(NetParams.TAG_USER_INFO);
-        Call<UserResponseEntity> userInfoCall= apiService.getUserInfo(token, params);
-        userInfoCall.enqueue(new Callback<UserResponseEntity>() {
-            @Override
-            public void onResponse(Call<UserResponseEntity> call, Response<UserResponseEntity> response) {
-                LogUtil.d("getUserInfo response", response.toString());
-                if (response.isSuccessful()){
-                    LogUtil.d("getUserInfo response success", response.body().toString());
-                    listener.onSuccess(response.body());
-                }else {
-                    LogUtil.d("getUserInfo response fail", response.errorBody().toString());
-                    listener.onFailure("网络请求失败");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserResponseEntity> call, Throwable t) {
-                LogUtil.d("getUserInfo onFailure", t.toString());
-                listener.onFailure(t.toString());
-            }
-        });
+                getBaseParamMap(NetParams.TAG_WEIXIN);
     }
 
+    /**
+     * 5 绑定手机
+     * @param token
+     * @param mobile
+     * @param verify
+     * @param listener
+     */
     public void bindMobile(String token,
                            String mobile,
                            String verify,
@@ -221,6 +241,90 @@ public class Network {
         });
     }
 
+    /**
+     * 6 重置密码
+     * @param mobile
+     * @param password
+     * @param repassword
+     * @param verify
+     * @param listener
+     */
+    public void resetPassword(String mobile,
+                              String password,
+                              String repassword,
+                              String verify,
+                              final IAsyncLoadListener<FindPasswordEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_RESET_PASSWORD);
+        params.put("mobile", mobile);
+        params.put("password", password);
+        params.put("repassword", repassword);
+        params.put("verify", verify);
+        Call<FindPasswordEntity> resetPasswordCall= apiService.resetPassword(params);
+        resetPasswordCall.enqueue(new Callback<FindPasswordEntity>() {
+            @Override
+            public void onResponse(Call<FindPasswordEntity> call, Response<FindPasswordEntity> response) {
+                LogUtil.d("resetPasswordCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("resetPasswordCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("resetPasswordCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FindPasswordEntity> call, Throwable t) {
+                LogUtil.d("resetPasswordCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 7 获取用户信息
+     * @param token
+     * @param listener
+     */
+    public void getUserInfo(String token, final IAsyncLoadListener<UserResponseEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_USER_INFO);
+        Call<UserResponseEntity> userInfoCall= apiService.getUserInfo(token, params);
+        userInfoCall.enqueue(new Callback<UserResponseEntity>() {
+            @Override
+            public void onResponse(Call<UserResponseEntity> call, Response<UserResponseEntity> response) {
+                LogUtil.d("getUserInfo response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("getUserInfo response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("getUserInfo response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponseEntity> call, Throwable t) {
+                LogUtil.d("getUserInfo onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 8 修改头像
+     */
+    public void changeHead(){
+
+    }
+
+    /**
+     * 9 修改昵称
+     * @param token
+     * @param nickname
+     * @param listener
+     */
     public void changeName(String token,
                            String nickname,
                            final IAsyncLoadListener<NameSetEntity> listener){
@@ -249,6 +353,15 @@ public class Network {
         });
     }
 
+    /**
+     * 10 修改密码
+     * @param token
+     * @param mobile
+     * @param password
+     * @param repassword
+     * @param verify
+     * @param listener
+     */
     public void changePassword(String token,
                            String mobile,
                            String password,
@@ -283,34 +396,138 @@ public class Network {
         });
     }
 
-    public void resetPassword(String mobile,
-                              String password,
-                              String repassword,
-                              String verify,
-                              final IAsyncLoadListener<FindPasswordEntity> listener){
+    /**
+     * 11 绑定邀请码
+     * @param token
+     * @param code
+     * @param listener
+     */
+    public void bindInviteCode(String token,
+                               String code,
+                               final IAsyncLoadListener<InviteCodeEntity> listener){
         Map<String, String> params=
-                getBaseParamMap(NetParams.TAG_RESET_PASSWORD);
-        params.put("mobile", mobile);
-        params.put("password", password);
-        params.put("repassword", repassword);
-        params.put("verify", verify);
-        Call<FindPasswordEntity> resetPasswordCall= apiService.resetPassword(params);
-        resetPasswordCall.enqueue(new Callback<FindPasswordEntity>() {
+                getBaseParamMap(NetParams.TAG_INVITE_CODE);
+        params.put("code", code);
+        Call<InviteCodeEntity> inviteCodeCall= apiService.bindInviteCode(token, params);
+        inviteCodeCall.enqueue(new Callback<InviteCodeEntity>() {
             @Override
-            public void onResponse(Call<FindPasswordEntity> call, Response<FindPasswordEntity> response) {
-                LogUtil.d("resetPasswordCall response", response.toString());
+            public void onResponse(Call<InviteCodeEntity> call, Response<InviteCodeEntity> response) {
+                LogUtil.d("inviteCodeCall response", response.toString());
                 if (response.isSuccessful()){
-                    LogUtil.d("resetPasswordCall response success", response.body().toString());
+                    LogUtil.d("inviteCodeCall response success", response.body().toString());
                     listener.onSuccess(response.body());
                 }else {
-                    LogUtil.d("resetPasswordCall response fail", response.errorBody().toString());
+                    LogUtil.d("inviteCodeCall response fail", response.errorBody().toString());
                     listener.onFailure("网络请求失败");
                 }
             }
 
             @Override
-            public void onFailure(Call<FindPasswordEntity> call, Throwable t) {
-                LogUtil.d("resetPasswordCall onFailure", t.toString());
+            public void onFailure(Call<InviteCodeEntity> call, Throwable t) {
+                LogUtil.d("inviteCodeCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 12 获取粉丝列表
+     */
+    public void getFans(){
+
+    }
+
+    /**
+     * 13 申请提现
+     * @param token
+     * @param money
+     * @param type
+     * @param account
+     * @param mobile
+     * @param verify
+     * @param listener
+     */
+    public void applyTiXian(String token,
+                            String money,
+                            String type,
+                            String account,
+                            String mobile,
+                            String verify,
+                            final IAsyncLoadListener<TiXianEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_TIXIAN);
+        params.put("money", money);
+        params.put("type", type);
+        params.put("account", account);
+        params.put("mobile", mobile);
+        params.put("verify", verify);
+        Call<TiXianEntity> tiXianCall= apiService.applyTiXian(token, params);
+        tiXianCall.enqueue(new Callback<TiXianEntity>() {
+            @Override
+            public void onResponse(Call<TiXianEntity> call, Response<TiXianEntity> response) {
+                LogUtil.d("tiXianCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("tiXianCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("tiXianCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TiXianEntity> call, Throwable t) {
+                LogUtil.d("tiXianCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 14 阅币记录
+     * @param token
+     * @param type
+     * @param pagesize
+     * @param page
+     * @param listener
+     */
+    public void getYueBiHistory(String token,
+                                String type,
+                                String pagesize,
+                                String page,
+                                final IAsyncLoadListener<TiXianEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_YUEBI);
+        params.put("type", type);
+        params.put("pagesize", pagesize);
+        params.put("page", page);
+    }
+
+    /**
+     * 15 签到
+     * @param token
+     * @param listener
+     */
+    public void doSignIn(String token, final IAsyncLoadListener<SignInEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_SIGNIN);
+        Call<SignInEntity> signInCall= apiService.doSignIn(token, params);
+        signInCall.enqueue(new Callback<SignInEntity>() {
+            @Override
+            public void onResponse(Call<SignInEntity> call, Response<SignInEntity> response) {
+                LogUtil.d("signInCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("signInCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("signInCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SignInEntity> call, Throwable t) {
+                LogUtil.d("signInCall onFailure", t.toString());
                 listener.onFailure(t.toString());
             }
         });

@@ -3,9 +3,12 @@ package com.zhimali.zheng.http;
 import com.zhimali.zheng.bean.BindMobileEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
+import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
+import com.zhimali.zheng.bean.SignInEntity;
+import com.zhimali.zheng.bean.TiXianEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
 
@@ -66,7 +69,7 @@ public interface ApiService {
 
     //11 http://www.52zhimali.com/index.php?m=mobile&c=member&a=bindInviteCode
     @GET("/index.php")
-    Call bindInviteCode(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<InviteCodeEntity> bindInviteCode(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //12 http://www.52zhimali.com/index.php?m=mobile&c=member&a=fans
     @GET("/index.php")
@@ -74,7 +77,7 @@ public interface ApiService {
 
     //13 http://www.52zhimali.com/index.php?m=mobile&c=member&a=withdraw
     @GET("/index.php")
-    Call applyTiXian(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<TiXianEntity> applyTiXian(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //14 http://www.52zhimali.com/index.php?m=mobile&c=member&a=walletRecord
     @GET("/index.php")
@@ -82,6 +85,6 @@ public interface ApiService {
 
     //15 http://www.52zhimali.com/index.php?m=mobile&c=member&a=signin
     @GET("/index.php")
-    Call doSignIn(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<SignInEntity> doSignIn(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
 }
