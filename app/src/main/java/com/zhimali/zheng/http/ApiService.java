@@ -2,6 +2,7 @@ package com.zhimali.zheng.http;
 
 import com.zhimali.zheng.bean.BindMobileEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
+import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
@@ -11,6 +12,7 @@ import com.zhimali.zheng.bean.SignInEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
+import com.zhimali.zheng.bean.YueBiResponseEntity;
 
 import java.util.Map;
 
@@ -73,7 +75,7 @@ public interface ApiService {
 
     //12 http://www.52zhimali.com/index.php?m=mobile&c=member&a=fans
     @GET("/index.php")
-    Call getFansList(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<FansResponseEntity> getFansList(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //13 http://www.52zhimali.com/index.php?m=mobile&c=member&a=withdraw
     @GET("/index.php")
@@ -81,7 +83,7 @@ public interface ApiService {
 
     //14 http://www.52zhimali.com/index.php?m=mobile&c=member&a=walletRecord
     @GET("/index.php")
-    Call getYueBiHistory(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    Call<YueBiResponseEntity> getYueBiHistory(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
     //15 http://www.52zhimali.com/index.php?m=mobile&c=member&a=signin
     @GET("/index.php")

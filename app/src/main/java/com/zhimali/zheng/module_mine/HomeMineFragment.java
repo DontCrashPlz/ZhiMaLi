@@ -112,11 +112,19 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_fans:{
-
+                if (MyApplication.getInstance().isHadUser()){
+                    if (MyApplication.appUser.getFans()< 1){
+                        showShortToast("您还没有粉丝");
+                    }else {
+                        startActivity(new Intent(getRealContext(), FansActivity.class));
+                    }
+                }else {
+                    showShortToast("请先登录");
+                }
                 break;
             }
             case R.id.mine_btn_yuebi:{
-
+                startActivity(new Intent(getRealContext(), YueBiActivity.class));
                 break;
             }
             case R.id.mine_btn_qiandao:{

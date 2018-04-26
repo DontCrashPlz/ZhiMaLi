@@ -10,6 +10,7 @@ import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.BindMobileEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
+import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
@@ -20,6 +21,7 @@ import com.zhimali.zheng.bean.TiXianEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.bean.WechatLoginEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
+import com.zhimali.zheng.bean.YueBiResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -433,8 +435,38 @@ public class Network {
     /**
      * 12 获取粉丝列表
      */
-    public void getFans(){
+    public void getFans(String token,
+                        int pagesize,
+                        int page,
+                        String search,
+                        final IAsyncLoadListener<FansResponseEntity> listener){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_FANS);
+        params.put("pagesize", String.valueOf(pagesize));
+        params.put("page", String.valueOf(page));
+        if (search!= null && search.length()> 0){
+            params.put("search", search);
+        }
+        Call<FansResponseEntity> fansCall= apiService.getFansList(token, params);
+        fansCall.enqueue(new Callback<FansResponseEntity>() {
+            @Override
+            public void onResponse(Call<FansResponseEntity> call, Response<FansResponseEntity> response) {
+                LogUtil.d("fansCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("fansCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("fansCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<FansResponseEntity> call, Throwable t) {
+                LogUtil.d("fansCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
     }
 
     /**
@@ -495,12 +527,32 @@ public class Network {
                                 String type,
                                 String pagesize,
                                 String page,
-                                final IAsyncLoadListener<TiXianEntity> listener){
+                                final IAsyncLoadListener<YueBiResponseEntity> listener){
         Map<String, String> params=
                 getBaseParamMap(NetParams.TAG_YUEBI);
         params.put("type", type);
         params.put("pagesize", pagesize);
         params.put("page", page);
+        Call<YueBiResponseEntity> yueBiCall= apiService.getYueBiHistory(token, params);
+        yueBiCall.enqueue(new Callback<YueBiResponseEntity>() {
+            @Override
+            public void onResponse(Call<YueBiResponseEntity> call, Response<YueBiResponseEntity> response) {
+                LogUtil.d("yueBiCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("yueBiCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("yueBiCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<YueBiResponseEntity> call, Throwable t) {
+                LogUtil.d("signInCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
     }
 
     /**
