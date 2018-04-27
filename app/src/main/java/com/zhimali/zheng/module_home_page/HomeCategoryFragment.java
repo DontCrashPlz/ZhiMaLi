@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.youth.banner.Banner;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.widgets.CustomTabLayout.Tool;
 import com.zheng.zchlibrary.widgets.LazyLoadFragment;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.NewsListAdapter;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
 
 /**
  * Created by Zheng on 2018/4/27.
@@ -34,7 +36,6 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     private String catid;
     private int mCurrentPage= 1;
 
-    private Banner mBanner;
     private RecyclerView mRecycler;
     private NewsListAdapter mAdapter;
 
@@ -55,14 +56,10 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
         }
 
         View mView= inflater.inflate(R.layout.fragment_home_category, container, false);
-        mBanner= mView.findViewById(R.id.banner);
-        if (catid.equals("6")){
-            mBanner.setVisibility(View.VISIBLE);
-        }else {
-            mBanner.setVisibility(View.GONE);
-        }
+
         mRecycler= mView.findViewById(R.id.recyclerview);
         mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
+        mRecycler.addItemDecoration(new MyNewsListItemDecoration(Tool.dp2px(getRealContext(), 15)));
         mAdapter= new NewsListAdapter(R.layout.item_news_list);
         mAdapter.setOnLoadMoreListener(this, mRecycler);
         mRecycler.setAdapter(mAdapter);

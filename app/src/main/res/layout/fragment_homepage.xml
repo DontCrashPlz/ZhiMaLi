@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_page">
 
@@ -9,7 +11,14 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/homepage_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="30dp"
+        app:tabIndicatorHeight="0dp"
+        app:tabTextColor="#555555"
+        app:tabSelectedTextColor="#3488fe"
+        app:tabTextAppearance="@style/TabLayoutTextStyle"
+        app:tabMode="scrollable"
+        app:tabGravity="center"
+        app:tabPaddingTop="5dp"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/homepage_viewpager"

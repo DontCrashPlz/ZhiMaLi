@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/news_type1"
@@ -11,8 +11,8 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:background="@drawable/button_background_white_selector"
-        android:visibility="gone">
+        android:clickable="true"
+        android:background="@drawable/button_background_white_selector">
         <TextView
             android:id="@+id/news_type1_title"
             android:layout_width="match_parent"
@@ -35,6 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@mipmap/zhanwei"
+                android:scaleType="centerCrop"
                 android:background="@color/background_page"/>
             <ImageView
                 android:id="@+id/news_type1_pic2"
@@ -44,14 +45,16 @@
                 android:src="@mipmap/zhanwei"
                 android:background="@color/background_page"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:scaleType="centerCrop"/>
             <ImageView
                 android:id="@+id/news_type1_pic3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@mipmap/zhanwei"
-                android:background="@color/background_page"/>
+                android:background="@color/background_page"
+                android:scaleType="centerCrop"/>
         </LinearLayout>
 
         <TextView
@@ -101,7 +104,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:visibility="gone"
+        android:clickable="true"
         android:background="@drawable/button_background_white_selector">
         <TextView
             android:id="@+id/news_type2_title"
@@ -120,7 +123,8 @@
             android:src="@mipmap/zhanwei"
             android:background="@color/background_page"
             android:layout_below="@+id/news_type2_title"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/news_type2_time"
@@ -129,7 +133,7 @@
             android:text="2000-01-01"
             android:textSize="@dimen/textSize_12"
             android:textColor="@color/textcolot_hint_gary"
-            android:layout_below="@+id/news_type2_pic1"
+            android:layout_below="@+id/news_type2_pic"
             android:layout_marginTop="7dp"/>
 
         <TextView
@@ -169,7 +173,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:visibility="gone"
+        android:clickable="true"
         android:background="@drawable/button_background_white_selector">
         <TextView
             android:id="@+id/news_type3_title"
@@ -228,7 +232,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:visibility="gone"
+        android:clickable="true"
         android:background="@drawable/button_background_white_selector">
         <TextView
             android:id="@+id/news_type4_title"
@@ -252,7 +256,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@mipmap/zhanwei"
-                android:background="@color/background_page"/>
+                android:background="@color/background_page"
+                android:scaleType="centerCrop"/>
             <ImageView
                 android:id="@+id/news_type4_pic2"
                 android:layout_width="0dp"
@@ -261,14 +266,16 @@
                 android:src="@mipmap/zhanwei"
                 android:background="@color/background_page"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:scaleType="centerCrop"/>
             <ImageView
                 android:id="@+id/news_type4_pic3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@mipmap/zhanwei"
-                android:background="@color/background_page"/>
+                android:background="@color/background_page"
+                android:scaleType="centerCrop"/>
         </LinearLayout>
 
         <TextView
