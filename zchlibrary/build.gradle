@@ -43,6 +43,9 @@ dependencies {
 
     compile 'de.hdodenhof:circleimageview:2.2.0'
 
-//    https://github.com/H07000223/FlycoTabLayout一个TabLayout开源库
+    //https://github.com/H07000223/FlycoTabLayout一个TabLayout开源库
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+
+    //https://github.com/youth5201314/banner一个banner开源库
+    compile 'com.youth.banner:banner:1.4.10'
 }

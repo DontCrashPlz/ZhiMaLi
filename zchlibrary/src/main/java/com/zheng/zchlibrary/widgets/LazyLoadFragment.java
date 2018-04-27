@@ -1,13 +1,13 @@
 package com.zheng.zchlibrary.widgets;
 
-import android.support.v4.app.Fragment;
+import com.zheng.zchlibrary.apps.BaseFragment;
 
 /**
  * Lazy Load Fragment: Auto judge the status of Fragment.Run onVisible() when the Fragment is visible.
  * Created by Zheng on 2017/10/26.
  */
 
-public abstract class LazyLoadFragment extends Fragment {
+public abstract class LazyLoadFragment extends BaseFragment {
 
     public boolean isVisible;
 

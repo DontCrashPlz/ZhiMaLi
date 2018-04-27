@@ -19,5 +19,6 @@
         android:layout_marginRight="15dp"
         android:layout_marginLeft="20dp"
         android:drawableRight="@mipmap/search"
-        android:paddingRight="18dp"/>
+        android:paddingRight="18dp"
+        android:clickable="true"/>
 </LinearLayout>

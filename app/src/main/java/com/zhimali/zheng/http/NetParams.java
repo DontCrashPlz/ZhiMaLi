@@ -9,6 +9,7 @@ public class NetParams {
     public static final String VALUE1= "mobile";
     public static final String PARAM2= "c";
     public static final String VALUE2= "member";
+    public static final String VALUE3= "content";
 
     public static final String PARAM_TAG= "a";
     public static final String TAG_YANZHENGMA= "verify";//1
@@ -26,4 +27,6 @@ public class NetParams {
     public static final String TAG_TIXIAN= "withdraw";//13
     public static final String TAG_YUEBI= "walletRecord";//14
     public static final String TAG_SIGNIN= "signin";//15
+    public static final String TAG_CATEGORY= "category";//16
+    public static final String TAG_NEWSLIST= "news_list";//17
 }

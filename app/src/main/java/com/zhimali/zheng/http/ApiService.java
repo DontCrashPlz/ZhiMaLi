@@ -1,12 +1,14 @@
 package com.zhimali.zheng.http;
 
 import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.bean.CategoryResponseEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
+import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
@@ -88,5 +90,13 @@ public interface ApiService {
     //15 http://www.52zhimali.com/index.php?m=mobile&c=member&a=signin
     @GET("/index.php")
     Call<SignInEntity> doSignIn(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //16 http://www.52zhimali.com/index.php?m=mobile&c=content&a=category
+    @GET("/index.php")
+    Call<CategoryResponseEntity> getCategory(@QueryMap Map<String, String> params);
+
+    //17 http://www.52zhimali.com/index.php?m=mobile&c=content&a=news_list
+    @GET("/index.php")
+    Call<NewsListResponseEntity> getNewsList(@QueryMap Map<String, String> params);
 
 }

@@ -9,12 +9,14 @@ import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.bean.CategoryResponseEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
+import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
@@ -85,6 +87,14 @@ public class Network {
         Map<String, String> baseParamMap= new HashMap<>();
         baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
         baseParamMap.put(NetParams.PARAM2, NetParams.VALUE2);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getContentParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE3);
         baseParamMap.put(NetParams.PARAM_TAG, networkTag);
         return baseParamMap;
     }
@@ -580,6 +590,77 @@ public class Network {
             @Override
             public void onFailure(Call<SignInEntity> call, Throwable t) {
                 LogUtil.d("signInCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 16 获取频道列表
+     * @param listener
+     */
+    public void getCategory(final IAsyncLoadListener<CategoryResponseEntity> listener){
+        Map<String, String> params=
+                getContentParamMap(NetParams.TAG_CATEGORY);
+        Call<CategoryResponseEntity> categoryCall= apiService.getCategory(params);
+        categoryCall.enqueue(new Callback<CategoryResponseEntity>() {
+            @Override
+            public void onResponse(Call<CategoryResponseEntity> call, Response<CategoryResponseEntity> response) {
+                LogUtil.d("categoryCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("categoryCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("categoryCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponseEntity> call, Throwable t) {
+                LogUtil.d("categoryCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 17 获取频道新闻列表
+     * @param catid
+     * @param page
+     * @param search
+     * @param listener
+     */
+    public void getNewsList(
+            String catid,
+            String page,
+            String search,
+            final IAsyncLoadListener<NewsListResponseEntity> listener){
+        Map<String, String> params=
+                getContentParamMap(NetParams.TAG_NEWSLIST);
+        params.put("catid", catid);
+        params.put("pagesize", "20");
+        params.put("page", page);
+        if (search!= null && search.length()> 0){
+            params.put("search", search);
+        }
+        Call<NewsListResponseEntity> newsListCall= apiService.getNewsList(params);
+        newsListCall.enqueue(new Callback<NewsListResponseEntity>() {
+            @Override
+            public void onResponse(Call<NewsListResponseEntity> call, Response<NewsListResponseEntity> response) {
+                LogUtil.d("newsListCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("newsListCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("newsListCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsListResponseEntity> call, Throwable t) {
+                LogUtil.d("newsListCall onFailure", t.toString());
                 listener.onFailure(t.toString());
             }
         });
