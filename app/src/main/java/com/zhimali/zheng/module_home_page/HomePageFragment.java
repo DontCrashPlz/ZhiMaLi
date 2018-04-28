@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_home_page;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -37,6 +38,7 @@ public class HomePageFragment extends BaseFragment {
     private TextView mSearchTv;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private ArrayList<CategoryEntity> cates;
 
     @Nullable
     @Override
@@ -50,7 +52,7 @@ public class HomePageFragment extends BaseFragment {
             public void onSuccess(CategoryResponseEntity categoryResponseEntity) {
                 showShortToast(categoryResponseEntity.getMsg());
                 if (categoryResponseEntity.getCode()== 0){
-                    final ArrayList<CategoryEntity> cates= categoryResponseEntity.getData();
+                    cates= categoryResponseEntity.getData();
                     if (cates.size()> 0){
                         mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
                             @Override
@@ -85,6 +87,23 @@ public class HomePageFragment extends BaseFragment {
 
     private void initUI(View mView) {
         mSearchTv= mView.findViewById(R.id.toolbar_search);
+        mSearchTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cates== null || cates.size()< 1){
+                    showShortToast("频道列表加载失败");
+                    return;
+                }
+                String catid= cates.get(mViewPager.getCurrentItem()).getCatid();
+                if (catid== null || catid.length()< 1){
+                    showShortToast("频道id加载失败");
+                    return;
+                }
+                Intent intent= new Intent(getRealContext(), SearchActivity.class);
+                intent.putExtra("catid", catid);
+                startActivity(intent);
+            }
+        });
         mTabLayout= mView.findViewById(R.id.homepage_tab);
         mViewPager= mView.findViewById(R.id.homepage_viewpager);
     }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.youth.banner.Banner;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.widgets.CustomTabLayout.Tool;
 import com.zheng.zchlibrary.widgets.LazyLoadFragment;
 import com.zhimali.zheng.R;
@@ -39,6 +41,8 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     private RecyclerView mRecycler;
     private NewsListAdapter mAdapter;
 
+    private boolean isPrepared;
+
     @Override
     public void lazyLoad() {
         requestNetData(mCurrentPage);
@@ -49,6 +53,7 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         catid= getArguments().getString("cateId");
+        LogUtil.d("catid", catid);
 
         if (catid== null || catid.length()< 1){
             showShortToast("频道id获取失败");
