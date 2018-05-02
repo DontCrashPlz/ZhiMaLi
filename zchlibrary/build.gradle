@@ -48,4 +48,6 @@ dependencies {
 
     //https://github.com/youth5201314/banner一个banner开源库
     compile 'com.youth.banner:banner:1.4.10'
+
+    compile 'com.hyman:flowlayout-lib:1.1.2'
 }
