@@ -1,5 +1,6 @@
 package com.zhimali.zheng.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -10,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.NewsListEntity;
+import com.zhimali.zheng.module_video.VedioDetailActivity;
 
 /**
  * Created by Zheng on 2018/5/3.
@@ -22,7 +24,7 @@ public class VedioListAdapter extends BaseQuickAdapter<NewsListEntity,VedioListA
     }
 
     @Override
-    protected void convert(VedioViewHolder helper, NewsListEntity item) {
+    protected void convert(VedioViewHolder helper, final NewsListEntity item) {
         helper.mVedioListTitle.setText(item.getTitle());
         Glide.with(mContext)
                 .load(item.getPics().get(0))
@@ -33,6 +35,15 @@ public class VedioListAdapter extends BaseQuickAdapter<NewsListEntity,VedioListA
         helper.mVedioListTime.setText(item.getFormat_date());
         helper.mVedioListRead.setText(item.getView_num());
         helper.mVedioListYb.setText(item.getCoin());
+
+        helper.mVedioListPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(mContext, VedioDetailActivity.class);
+                intent.putExtra("id", item.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     class VedioViewHolder extends BaseViewHolder{

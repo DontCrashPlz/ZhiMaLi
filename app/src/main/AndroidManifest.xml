@@ -75,8 +75,10 @@
         <activity android:name=".module_home_page.SearchActivity"
             android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".module_video.VedioSearchActivity"
+        <activity android:name=".module_video.VedioSearchActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".module_video.VedioDetailActivity"
             android:screenOrientation="portrait" />
 
     </application>
