@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
+    android:paddingBottom="25dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/search_empty_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="抱歉，没有找到相关的内容"
+        android:textSize="@dimen/textSize_15"
+        android:textColor="#555555"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    <TextView
+        android:id="@+id/search_empty_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="·请检查您的输入是否正确"
+        android:textColor="#ababab"
+        android:textSize="@dimen/textSize_13"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_empty_text1"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/search_empty_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="·缩短关键字或更换关键字"
+        android:textColor="#ababab"
+        android:textSize="@dimen/textSize_13"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_empty_text2"
+        android:layout_marginTop="15dp"/>
+
+</android.support.constraint.ConstraintLayout>

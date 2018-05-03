@@ -72,6 +72,13 @@
         <activity android:name=".module_mine.YueBiActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".module_home_page.SearchActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".module_video.VedioSearchActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

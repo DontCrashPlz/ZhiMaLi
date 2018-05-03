@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vedio_list_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="10dp"
+    android:clickable="true"
+    android:background="@drawable/button_background_white_selector"
+    android:layout_marginTop="10dp">
+
+    <TextView
+        android:id="@+id/vedio_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="限时免费｜春夏换季，怎样健康饮食不生病？高级营养讲师告诉你！"
+        android:textSize="@dimen/textSize_15"
+        android:textColor="#555555"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <FrameLayout
+        android:id="@+id/vedio_list_fly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vedio_list_title"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/vedio_list_pic"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:src="@mipmap/zhanwei"
+            android:background="@color/background_page"
+            android:scaleType="centerCrop" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/play_redio"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/vedio_list_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2000-01-01"
+        android:textSize="@dimen/textSize_12"
+        android:textColor="@color/textcolot_hint_gary"
+        android:layout_below="@+id/vedio_list_fly"
+        android:layout_marginTop="7dp"/>
+
+    <TextView
+        android:id="@+id/vedio_list_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100000"
+        android:textSize="@dimen/textSize_12"
+        android:textColor="@color/textcolot_hint_gary"
+        android:layout_alignBaseline="@+id/vedio_list_time"
+        android:layout_toRightOf="@+id/vedio_list_time"
+        android:drawableLeft="@mipmap/browse"
+        android:drawablePadding="3dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/vedio_list_yb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20"
+        android:textSize="@dimen/textSize_12"
+        android:textColor="@color/textcolot_hint_gary"
+        android:layout_alignBaseline="@+id/vedio_list_time"
+        android:layout_alignParentRight="true"
+        android:drawableLeft="@mipmap/yb2"
+        android:drawablePadding="3dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"/>
+
+
+</RelativeLayout>

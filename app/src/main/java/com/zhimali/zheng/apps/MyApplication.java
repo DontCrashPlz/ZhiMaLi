@@ -5,6 +5,7 @@ import android.widget.Toast;
 import com.zheng.zchlibrary.apps.BaseApplication;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.utils.ScreenUtils;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.bean.UserEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
@@ -24,12 +25,22 @@ public class MyApplication extends BaseApplication {
         return mSingleInstance;
     }
 
+    //屏幕宽度
+    public static String sw;
+    //屏幕高度
+    public static String sh;
+    //uuid
+    public static String uuid;
+
     @Override
     public void onCreate() {
         super.onCreate();
         mSingleInstance= this;
 
         loadUser();
+
+        sw= String.valueOf(ScreenUtils.getScreenWidth(this));
+        sh= String.valueOf(ScreenUtils.getScreenHeight(this));
     }
 
     //根据本地保存的token加载用户

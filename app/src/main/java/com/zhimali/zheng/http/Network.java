@@ -16,6 +16,7 @@ import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
+import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
@@ -661,6 +662,49 @@ public class Network {
             @Override
             public void onFailure(Call<NewsListResponseEntity> call, Throwable t) {
                 LogUtil.d("newsListCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 18 获取新闻详情
+     * @param token
+     * @param id
+     * @param listener
+     */
+    public void getNewsDetail(
+            String token,
+            String id,
+            final IAsyncLoadListener<NewsDetailResponseEntity> listener){
+        Map<String, String> params=
+                getContentParamMap(NetParams.TAG_NEWSDETAIL);
+        params.put("id", id);
+        if (MyApplication.sw!= null && MyApplication.sw.length()> 0){
+            params.put("sw", MyApplication.sw);
+        }
+        if (MyApplication.sh!= null && MyApplication.sh.length()> 0){
+            params.put("sh", MyApplication.sh);
+        }
+
+//        params.put("uuid", "");
+        Call<NewsDetailResponseEntity> newsDetailCall= apiService.getNewsDetail(token, params);
+        newsDetailCall.enqueue(new Callback<NewsDetailResponseEntity>() {
+            @Override
+            public void onResponse(Call<NewsDetailResponseEntity> call, Response<NewsDetailResponseEntity> response) {
+                LogUtil.d("newsDetailCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("newsDetailCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("newsDetailCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsDetailResponseEntity> call, Throwable t) {
+                LogUtil.d("newsDetailCall onFailure", t.toString());
                 listener.onFailure(t.toString());
             }
         });

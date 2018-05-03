@@ -8,6 +8,7 @@ import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
+import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
@@ -98,5 +99,9 @@ public interface ApiService {
     //17 http://www.52zhimali.com/index.php?m=mobile&c=content&a=news_list
     @GET("/index.php")
     Call<NewsListResponseEntity> getNewsList(@QueryMap Map<String, String> params);
+
+    //18 http://www.52zhimali.com/index.php?m=mobile&c=content&a=news_detail
+    @GET("/index.php")
+    Call<NewsDetailResponseEntity> getNewsDetail(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
 }

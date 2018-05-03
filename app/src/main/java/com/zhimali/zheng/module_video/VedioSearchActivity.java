@@ -1,4 +1,4 @@
-package com.zhimali.zheng.module_home_page;
+package com.zhimali.zheng.module_video;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -19,10 +18,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
-import com.zheng.zchlibrary.widgets.CustomTabLayout.Tool;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.SearchListAdapter;
-import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.adapter.VedioListAdapter;
 import com.zhimali.zheng.bean.NewsListEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.dao.DaoMaster;
@@ -30,7 +28,6 @@ import com.zhimali.zheng.dao.DaoSession;
 import com.zhimali.zheng.dao.HistoryData;
 import com.zhimali.zheng.db.GreenDaoHelper;
 import com.zhimali.zheng.http.Network;
-import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -42,9 +39,8 @@ import java.util.List;
  * Created by Zheng on 2018/4/28.
  */
 
-public class SearchActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
+public class VedioSearchActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
 
-    private String catid;
     private int mCurrentPage= 1;
     private String mKeyword;
 
@@ -54,7 +50,7 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
     private ImageButton mCleanHistoryIbtn;
     private TagFlowLayout mTagflowlayout;
     private RecyclerView mRecycler;
-    private SearchListAdapter mAdapter;
+    private VedioListAdapter mAdapter;
 
     private GreenDaoHelper mHelper;
 
@@ -62,14 +58,6 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        catid= getIntent().getStringExtra("catid");
-        if (catid== null || catid.length()<1 ){
-            showShortToast("频道加载错误");
-            finish();
-            return;
-        }
-        LogUtil.d("catid", catid);
 
         initDao();
 
@@ -179,10 +167,9 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
         });
         mRecycler= findViewById(R.id.search_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
-        mAdapter= new SearchListAdapter(R.layout.item_news_search_list);
+        mAdapter= new VedioListAdapter(R.layout.item_vedio_list);
         mAdapter.setOnLoadMoreListener(this, mRecycler);
         mRecycler.setAdapter(mAdapter);
-        mRecycler.addItemDecoration(new MyNewsListItemDecoration(Tool.dp2px(getRealContext(), 15)));
     }
 
     private void requestNetData(final int page, String keyword){
@@ -192,7 +179,7 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
         }
 
         Network.getInstance().getNewsList(
-                catid,
+                String.valueOf(17),
                 String.valueOf(page),
                 keyword,
                 new IAsyncLoadListener<NewsListResponseEntity>() {

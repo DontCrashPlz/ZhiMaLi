@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseFragment;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.CategoryEntity;
 import com.zhimali.zheng.bean.CategoryResponseEntity;
@@ -99,6 +100,7 @@ public class HomePageFragment extends BaseFragment {
                     showShortToast("频道id加载失败");
                     return;
                 }
+                LogUtil.d("catid", catid);
                 Intent intent= new Intent(getRealContext(), SearchActivity.class);
                 intent.putExtra("catid", catid);
                 startActivity(intent);

@@ -29,4 +29,5 @@ public class NetParams {
     public static final String TAG_SIGNIN= "signin";//15
     public static final String TAG_CATEGORY= "category";//16
     public static final String TAG_NEWSLIST= "news_list";//17
+    public static final String TAG_NEWSDETAIL= "news_detail";//18
 }
