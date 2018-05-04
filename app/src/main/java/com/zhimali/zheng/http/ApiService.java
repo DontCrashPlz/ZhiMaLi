@@ -1,15 +1,22 @@
 package com.zhimali.zheng.http;
 
+import com.zhimali.zheng.bean.AboutUsEntity;
 import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.bean.BusinessEntity;
 import com.zhimali.zheng.bean.CategoryResponseEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
+import com.zhimali.zheng.bean.FeedBackEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
+import com.zhimali.zheng.bean.HelpDetailResponseEntity;
+import com.zhimali.zheng.bean.HelpResponseEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
+import com.zhimali.zheng.bean.NoticeDetailResponseEntity;
+import com.zhimali.zheng.bean.NoticeResponseEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
@@ -104,4 +111,31 @@ public interface ApiService {
     @GET("/index.php")
     Call<NewsDetailResponseEntity> getNewsDetail(@Header("Xauth")String token, @QueryMap Map<String, String> params);
 
+    //19 http://www.52zhimali.com/index.php?m=mobile&c=other&a=about
+    @GET("/index.php")
+    Call<AboutUsEntity> getAboutUs(@QueryMap Map<String, String> params);
+
+    //20 http://www.52zhimali.com/index.php?m=mobile&c=other&a=feedback
+    @GET("/index.php")
+    Call<FeedBackEntity> sendFeedback(@QueryMap Map<String, String> params);
+
+    //21 http://www.52zhimali.com/index.php?m=mobile&c=other&a=business
+    @GET("/index.php")
+    Call<BusinessEntity> getBusiness(@QueryMap Map<String, String> params);
+
+    //22 http://www.52zhimali.com/index.php?m=mobile&c=notice&a=notice_list
+    @GET("/index.php")
+    Call<NoticeResponseEntity> getNoticeList(@QueryMap Map<String, String> params);
+
+    //23 http://www.52zhimali.com/index.php?m=mobile&c=notice&a=notice_detail
+    @GET("/index.php")
+    Call<NoticeDetailResponseEntity> getNoticeDetail(@QueryMap Map<String, String> params);
+
+    //24 http://www.52zhimali.com/index.php?m=mobile&c=help&a=help_list
+    @GET("/index.php")
+    Call<HelpResponseEntity> getHelpList(@QueryMap Map<String, String> params);
+
+    //25 http://www.52zhimali.com/index.php?m=mobile&c=help&a=help_detail
+    @GET("/index.php")
+    Call<HelpDetailResponseEntity> getHelpDetail(@QueryMap Map<String, String> params);
 }

@@ -8,10 +8,13 @@ import com.zheng.zchlibrary.https.NovateCookieManger;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.AboutUsEntity;
 import com.zhimali.zheng.bean.BindMobileEntity;
+import com.zhimali.zheng.bean.BusinessEntity;
 import com.zhimali.zheng.bean.CategoryResponseEntity;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
+import com.zhimali.zheng.bean.FeedBackEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
@@ -96,6 +99,14 @@ public class Network {
         Map<String, String> baseParamMap= new HashMap<>();
         baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
         baseParamMap.put(NetParams.PARAM2, NetParams.VALUE3);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getOtherParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE4);
         baseParamMap.put(NetParams.PARAM_TAG, networkTag);
         return baseParamMap;
     }
@@ -705,6 +716,95 @@ public class Network {
             @Override
             public void onFailure(Call<NewsDetailResponseEntity> call, Throwable t) {
                 LogUtil.d("newsDetailCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 19 关于我们
+     * @param listener
+     */
+    public void getAboutUs(final IAsyncLoadListener<AboutUsEntity> listener){
+        Map<String, String> params=
+                getOtherParamMap(NetParams.TAG_ABOUT_US);
+        Call<AboutUsEntity> aboutUsCall= apiService.getAboutUs(params);
+        aboutUsCall.enqueue(new Callback<AboutUsEntity>() {
+            @Override
+            public void onResponse(Call<AboutUsEntity> call, Response<AboutUsEntity> response) {
+                LogUtil.d("aboutUsCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("aboutUsCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("aboutUsCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AboutUsEntity> call, Throwable t) {
+                LogUtil.d("aboutUsCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 20 用户反馈
+     * @param content
+     * @param listener
+     */
+    public void sendFeedBack(String content, final IAsyncLoadListener<FeedBackEntity> listener){
+        Map<String, String> params=
+                getOtherParamMap(NetParams.TAG_FEEDBACK);
+        params.put("content", content);
+        Call<FeedBackEntity> feedbackCall= apiService.sendFeedback(params);
+        feedbackCall.enqueue(new Callback<FeedBackEntity>() {
+            @Override
+            public void onResponse(Call<FeedBackEntity> call, Response<FeedBackEntity> response) {
+                LogUtil.d("feedbackCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("feedbackCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("feedbackCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeedBackEntity> call, Throwable t) {
+                LogUtil.d("feedbackCall onFailure", t.toString());
+                listener.onFailure(t.toString());
+            }
+        });
+    }
+
+    /**
+     * 21 商务合作
+     * @param listener
+     */
+    public void getBusiness(final IAsyncLoadListener<BusinessEntity> listener){
+        Map<String, String> params=
+                getOtherParamMap(NetParams.TAG_BUSINESS);
+        Call<BusinessEntity> businessCall= apiService.getBusiness(params);
+        businessCall.enqueue(new Callback<BusinessEntity>() {
+            @Override
+            public void onResponse(Call<BusinessEntity> call, Response<BusinessEntity> response) {
+                LogUtil.d("businessCall response", response.toString());
+                if (response.isSuccessful()){
+                    LogUtil.d("businessCall response success", response.body().toString());
+                    listener.onSuccess(response.body());
+                }else {
+                    LogUtil.d("businessCall response fail", response.errorBody().toString());
+                    listener.onFailure("网络请求失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BusinessEntity> call, Throwable t) {
+                LogUtil.d("businessCall onFailure", t.toString());
                 listener.onFailure(t.toString());
             }
         });

@@ -124,7 +124,11 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_yuebi:{
-                startActivity(new Intent(getRealContext(), YueBiActivity.class));
+                if (MyApplication.getInstance().isHadUser()){
+                    startActivity(new Intent(getRealContext(), YueBiActivity.class));
+                }else {//如果没有登录，跳转到登录界面
+                    showShortToast("请先登录");
+                }
                 break;
             }
             case R.id.mine_btn_qiandao:{
@@ -148,7 +152,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_rly_business:{
-
+                startActivity(new Intent(getRealContext(), BusinessActivity.class));
                 break;
             }
             case R.id.mine_rly_tixian:{

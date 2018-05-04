@@ -109,4 +109,5 @@ public class HomePageFragment extends BaseFragment {
         mTabLayout= mView.findViewById(R.id.homepage_tab);
         mViewPager= mView.findViewById(R.id.homepage_viewpager);
     }
+
 }

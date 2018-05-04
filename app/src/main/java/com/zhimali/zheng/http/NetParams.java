@@ -10,6 +10,9 @@ public class NetParams {
     public static final String PARAM2= "c";
     public static final String VALUE2= "member";
     public static final String VALUE3= "content";
+    public static final String VALUE4= "other";
+    public static final String VALUE5= "notice";
+    public static final String VALUE6= "help";
 
     public static final String PARAM_TAG= "a";
     public static final String TAG_YANZHENGMA= "verify";//1
@@ -30,4 +33,11 @@ public class NetParams {
     public static final String TAG_CATEGORY= "category";//16
     public static final String TAG_NEWSLIST= "news_list";//17
     public static final String TAG_NEWSDETAIL= "news_detail";//18
+    public static final String TAG_ABOUT_US= "about";//19
+    public static final String TAG_FEEDBACK= "feedback";//20
+    public static final String TAG_BUSINESS= "business";//21
+    public static final String TAG_NOTICE_LIST= "notice_list";//22
+    public static final String TAG_NOTICE_DETAIL= "notice_detail";//23
+    public static final String TAG_HELP_LIST= "help_list";//24
+    public static final String TAG_HELP_DETAIL= "help_detail";//25
 }

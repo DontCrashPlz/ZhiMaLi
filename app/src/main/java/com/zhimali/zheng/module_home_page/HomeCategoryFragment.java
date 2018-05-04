@@ -42,10 +42,13 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     private NewsListAdapter mAdapter;
 
     private boolean isPrepared;
+    private boolean isLoadedOnce;
 
     @Override
     public void lazyLoad() {
-        requestNetData(mCurrentPage);
+        if (isPrepared && !isLoadedOnce && isVisible){
+            requestNetData(mCurrentPage);
+        }
     }
 
     @Nullable
@@ -68,10 +71,15 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
         mAdapter= new NewsListAdapter(R.layout.item_news_list);
         mAdapter.setOnLoadMoreListener(this, mRecycler);
         mRecycler.setAdapter(mAdapter);
+
+        isPrepared= true;
+
+        lazyLoad();
+
         return mView;
     }
 
-    private void requestNetData(int page){
+    private void requestNetData(final int page){
         if (page< 1) return;
 
         Network.getInstance().getNewsList(
@@ -83,17 +91,28 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
                     public void onSuccess(NewsListResponseEntity newsListResponseEntity) {
                         showShortToast(newsListResponseEntity.getMsg());
                         if (newsListResponseEntity.getCode()== 0){
+                            if (!isLoadedOnce){
+                                isLoadedOnce= true;
+                            }
                             if (newsListResponseEntity.getData().size()> 0){
                                 mAdapter.addData(newsListResponseEntity.getData());
+                                mAdapter.loadMoreComplete();
+                            }else {
+                                mAdapter.loadMoreComplete();
+                                mAdapter.loadMoreEnd();
+                                if (page== 1){
+//                                    mAdapter.setEmptyView(R.layout.layout_search_empty);
+                                }
                             }
+                        }else {
+                            mAdapter.loadMoreFail();
                         }
-                        mAdapter.loadMoreComplete();
                     }
 
                     @Override
                     public void onFailure(String msg) {
                         showShortToast(msg);
-                        mAdapter.loadMoreComplete();
+                        mAdapter.loadMoreFail();
                     }
                 });
     }
