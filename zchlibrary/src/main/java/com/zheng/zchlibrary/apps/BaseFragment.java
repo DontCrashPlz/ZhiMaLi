@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.zheng.zchlibrary.interfaces.*;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.utils.ToastUtils;
 
 /**
  * Created by Zheng on 2018/4/14.
@@ -32,13 +33,13 @@ public class BaseFragment extends Fragment implements IBaseView {
     @Override
     public void showLongToast(String msg) {
         if (msg!= null)
-            Toast.makeText(getRealContext(), msg, Toast.LENGTH_LONG).show();
+            ToastUtils.showLongToast(getRealContext(), msg);
     }
 
     @Override
     public void showShortToast(String msg) {
         if (msg!= null)
-            Toast.makeText(getRealContext(), msg, Toast.LENGTH_SHORT).show();
+            ToastUtils.showShortToast(getRealContext(), msg);
     }
 
     @Override
