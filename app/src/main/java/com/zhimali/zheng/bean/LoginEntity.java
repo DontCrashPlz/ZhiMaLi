@@ -3,7 +3,7 @@ package com.zhimali.zheng.bean;
 /**
  * Created by Zheng on 2018/4/23.
  */
-
+@Deprecated
 public class LoginEntity {
 //    {
 //        "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPVUx4QS5TSElKSUVkZCIsImF1ZCI6Ik9VTHhBLlNISUpJRWRkIiwiaWF0IjoxNTI0NDczOTczLCJuYmYiOjE1MjQ0NzM5NzMsInVpZCI6IjgiLCJtb2JpbGUiOiIxMzUyMzAwNTUyOSJ9.5z8ph9htRnym0kRV7BGEVZDbKtKqhjmw2tr1xTvtksM",

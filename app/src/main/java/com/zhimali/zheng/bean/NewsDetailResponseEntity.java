@@ -3,7 +3,7 @@ package com.zhimali.zheng.bean;
 /**
  * Created by Zheng on 2018/5/3.
  */
-
+@Deprecated
 public class NewsDetailResponseEntity {
     private NewsDetailEntity data;
     private int code;

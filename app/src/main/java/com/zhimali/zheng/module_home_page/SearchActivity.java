@@ -76,6 +76,11 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
         initUI();
     }
 
+    @Override
+    public void initProgress() {
+
+    }
+
     private void initDao() {
         DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(this, "zhimali.db");
         SQLiteDatabase database = devOpenHelper.getWritableDatabase();

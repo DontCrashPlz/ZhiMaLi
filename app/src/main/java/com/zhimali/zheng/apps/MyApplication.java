@@ -10,6 +10,10 @@ import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.bean.UserEntity;
 import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Zheng on 2018/4/20.
@@ -46,7 +50,7 @@ public class MyApplication extends BaseApplication {
     //根据本地保存的token加载用户
     public void loadUser(){
         if (loadLocalToken()){
-            loadUser(appToken);
+            refreshUser(appToken);
         }
     }
 
@@ -110,22 +114,25 @@ public class MyApplication extends BaseApplication {
         return false;
     }
     //根据token加载用户信息
-    private void loadUser(String token){
-        Network.getInstance().getUserInfo(token, new IAsyncLoadListener<UserResponseEntity>() {
-            @Override
-            public void onSuccess(UserResponseEntity userResponseEntity) {
-                LogUtil.d("loadUser userResponseEntity msg", userResponseEntity.getMsg());
-                if (userResponseEntity.getCode()== 0){
-                    appUser= userResponseEntity.getData();
-                    LogUtil.d("loadUser userEntity", userResponseEntity.getData().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                LogUtil.d("loadUser onFailure", msg);
-            }
-        });
+    private void refreshUser(String token){
+        if (appToken!= null && appToken.length()> 0){
+            Network.getInstance().getUserInfo(appToken)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .compose(ResponseTransformer.<UserEntity>handleResult())
+                    .subscribe(new Consumer<UserEntity>() {
+                        @Override
+                        public void accept(UserEntity userEntity) throws Exception {
+                            appUser= userEntity;
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
 }

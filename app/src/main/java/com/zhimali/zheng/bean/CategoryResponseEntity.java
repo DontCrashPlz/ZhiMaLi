@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Zheng on 2018/4/27.
  */
-
+@Deprecated
 public class CategoryResponseEntity {
     private ArrayList<CategoryEntity> data= new ArrayList<>();
     private int code;

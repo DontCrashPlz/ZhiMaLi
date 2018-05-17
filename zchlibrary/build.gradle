@@ -9,6 +9,7 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
@@ -39,8 +40,10 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
+    //圆形图片库
     compile 'de.hdodenhof:circleimageview:2.2.0'
 
     //https://github.com/H07000223/FlycoTabLayout一个TabLayout开源库
@@ -49,5 +52,6 @@ dependencies {
     //https://github.com/youth5201314/banner一个banner开源库
     compile 'com.youth.banner:banner:1.4.10'
 
+    //hongyang标签库
     compile 'com.hyman:flowlayout-lib:1.1.2'
 }

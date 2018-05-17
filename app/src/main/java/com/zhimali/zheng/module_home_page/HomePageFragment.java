@@ -15,12 +15,18 @@ import android.widget.TextView;
 import com.zheng.zchlibrary.apps.BaseFragment;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.CategoryEntity;
 import com.zhimali.zheng.bean.CategoryResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
 
 import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -48,40 +54,52 @@ public class HomePageFragment extends BaseFragment {
 
         initUI(mView);
 
-        Network.getInstance().getCategory(new IAsyncLoadListener<CategoryResponseEntity>() {
-            @Override
-            public void onSuccess(CategoryResponseEntity categoryResponseEntity) {
-                showShortToast(categoryResponseEntity.getMsg());
-                if (categoryResponseEntity.getCode()== 0){
-                    cates= categoryResponseEntity.getData();
-                    if (cates.size()> 0){
-                        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        addNetWork(
+                Network.getInstance().getCategory()
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<ArrayList<CategoryEntity>>() {
                             @Override
-                            public Fragment getItem(int position) {
-                                return HomeCategoryFragment.newInstance(cates.get(position).getCatid());
-                            }
+                            public void accept(ArrayList<CategoryEntity> categoryEntities) throws Exception {
+                                dismissProgressDialog();
+                                if (cates.size() > 0) {
+                                    mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+                                        @Override
+                                        public Fragment getItem(int position) {
+                                            return HomeCategoryFragment.newInstance(cates.get(position).getCatid());
+                                        }
 
+                                        @Override
+                                        public int getCount() {
+                                            return cates.size();
+                                        }
+
+                                        @Override
+                                        public CharSequence getPageTitle(int position) {
+                                            return cates.get(position).getCatname();
+                                        }
+                                    });
+
+                                    mTabLayout.setupWithViewPager(mViewPager);
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
                             @Override
-                            public int getCount() {
-                                return cates.size();
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
                             }
-
+                        }, new Action() {
                             @Override
-                            public CharSequence getPageTitle(int position) {
-                                return cates.get(position).getCatname();
+                            public void run() throws Exception {
+                                dismissProgressDialog();
                             }
-                        });
-
-                        mTabLayout.setupWithViewPager(mViewPager);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showShortToast(msg);
-            }
-        });
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
         return mView;
     }
@@ -110,4 +128,14 @@ public class HomePageFragment extends BaseFragment {
         mViewPager= mView.findViewById(R.id.homepage_viewpager);
     }
 
+    @Override
+    public void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在加载频道");
+    }
+
+    @Override
+    public void initProgressBar(View view) {
+
+    }
 }

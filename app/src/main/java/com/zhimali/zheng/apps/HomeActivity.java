@@ -36,6 +36,11 @@ public class HomeActivity extends BaseActivity implements CompoundButton.OnCheck
         mHomePageRbtn.setChecked(true);
     }
 
+    @Override
+    public void initProgress() {
+
+    }
+
     private void initUI() {
 
         manager= getSupportFragmentManager();

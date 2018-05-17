@@ -49,6 +49,16 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="5dp"/>
 
+            <TextView
+                android:id="@+id/search_no_history_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search_devide"
+                android:text="暂无历史记录"
+                android:textColor="#ababab"
+                android:textSize="@dimen/textSize_12"
+                android:visibility="gone"/>
+
             <com.zhy.view.flowlayout.TagFlowLayout
                 android:id="@+id/search_tagflow"
                 android:layout_width="match_parent"

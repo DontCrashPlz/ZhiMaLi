@@ -30,4 +30,9 @@ public class SplashActivity extends BaseActivity {
             }
         }).start();
     }
+
+    @Override
+    public void initProgress() {
+
+    }
 }

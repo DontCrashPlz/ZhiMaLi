@@ -3,7 +3,7 @@ package com.zhimali.zheng.bean;
 /**
  * Created by Zheng on 2018/4/25.
  */
-
+@Deprecated
 public class TiXianEntity {
 //    {
 //        "data": null,

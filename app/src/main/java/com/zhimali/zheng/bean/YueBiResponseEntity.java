@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Zheng on 2018/4/26.
  */
-
+@Deprecated
 public class YueBiResponseEntity {
     private ArrayList<YueBiEntity> data= new ArrayList<>();
     private int code;

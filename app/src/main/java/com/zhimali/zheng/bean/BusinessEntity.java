@@ -3,7 +3,7 @@ package com.zhimali.zheng.bean;
 /**
  * Created by Zheng on 2018/5/4.
  */
-
+@Deprecated
 public class BusinessEntity {
     private String data;
     private int code;

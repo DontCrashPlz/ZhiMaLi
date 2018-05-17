@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Zheng on 2018/5/4.
  */
-
+@Deprecated
 public class NoticeResponseEntity {
     private ArrayList<NoticeEntity> data= new ArrayList<>();
     private int code;

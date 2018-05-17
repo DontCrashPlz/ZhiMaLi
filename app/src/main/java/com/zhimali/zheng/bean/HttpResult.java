@@ -1,24 +1,19 @@
 package com.zhimali.zheng.bean;
 
 /**
- * Created by Zheng on 2018/4/25.
+ * Created by Zheng on 2018/5/17.
  */
-@Deprecated
-public class ChangePasswordEntity {
-//    {
-//        "data": null,
-//            "code": 500,
-//            "msg": "请填写手机号码"
-//    }
-    private String data;
+
+public class HttpResult<T> {
+    private T data;
     private int code;
     private String msg;
 
-    public String getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -40,8 +35,8 @@ public class ChangePasswordEntity {
 
     @Override
     public String toString() {
-        return "ChangePasswordEntity{" +
-                "data='" + data + '\'' +
+        return "HttpResult{" +
+                "data=" + data +
                 ", code=" + code +
                 ", msg='" + msg + '\'' +
                 '}';

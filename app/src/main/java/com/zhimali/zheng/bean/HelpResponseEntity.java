@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Zheng on 2018/5/4.
  */
-
+@Deprecated
 public class HelpResponseEntity {
     private ArrayList<HelpEntity> data= new ArrayList<>();
     private int code;
