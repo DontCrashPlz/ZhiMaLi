@@ -87,26 +87,41 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
     }
 
+    /**
+     * 初始化菊花加载弹窗和圆环加载提示
+     */
     public abstract void initProgress();
 
+    /**
+     * 弹出菊花加载弹窗
+     */
     public void showProgressDialog(){
         if (mProgressDialog!= null && !mProgressDialog.isShowing()){
             mProgressDialog.show();
         }
     }
 
+    /**
+     * 取消菊花加载弹窗
+     */
     public void dismissProgressDialog(){
         if (mProgressDialog!= null && mProgressDialog.isShowing()){
             mProgressDialog.dismiss();
         }
     }
 
+    /**
+     * 弹出圆环加载控件
+     */
     public void showProgressBar(){
         if (mProgressBar!= null && !mProgressBar.isShown()){
             mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
+    /**
+     * 取消圆环加载控件
+     */
     public void dismissProgressBar(){
         if (mProgressBar!= null && mProgressBar.isShown()){
             mProgressBar.setVisibility(View.GONE);
