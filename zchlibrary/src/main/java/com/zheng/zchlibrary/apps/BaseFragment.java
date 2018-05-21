@@ -91,7 +91,16 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
         }
     }
 
+    /**
+     * 加载菊花加载弹窗
+     */
     public abstract void initProgressDialog();
+
+    /**
+     * 加载圆环加载控件
+     * 由于Fragment中初始化控件需要Fragment视图，所以在onStart中获取视图再初始化圆环控件
+     * @param view
+     */
     public abstract void initProgressBar(View view);
 
     public void showProgressDialog(){

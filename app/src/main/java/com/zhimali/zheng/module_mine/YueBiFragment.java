@@ -15,9 +15,18 @@ import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.YueBiListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.NewsListEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
+import com.zhimali.zheng.bean.YueBiEntity;
 import com.zhimali.zheng.bean.YueBiResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/20.
@@ -62,41 +71,69 @@ public class YueBiFragment extends BaseFragment implements BaseQuickAdapter.Requ
         }
         mAdapter.setOnLoadMoreListener(this, mRecycler);
 
-        requestNetData(mCurrentPage);
+        requestNetData();
 
         return mView;
     }
 
-    private void requestNetData(int page){
-        if (page< 1) return;
+    private void requestNetData(){
 
-        Network.getInstance().getYueBiHistory(
-                MyApplication.appToken,
-                String.valueOf(mFragmentTag),
-                String.valueOf(20),
-                String.valueOf(mCurrentPage),
-                new IAsyncLoadListener<YueBiResponseEntity>() {
+        addNetWork(Network.getInstance()
+                .getYueBiHistory(MyApplication.appToken,
+                        String.valueOf(mFragmentTag),
+                        String.valueOf(20),
+                        String.valueOf(mCurrentPage))
+                .compose(ResponseTransformer.changeThread())
+                .compose(ResponseTransformer.handleResult())
+                .subscribe(new Consumer<ArrayList<YueBiEntity>>() {
                     @Override
-                    public void onSuccess(YueBiResponseEntity yueBiResponseEntity) {
-                        showShortToast(yueBiResponseEntity.getMsg());
-                        if (yueBiResponseEntity.getCode()== 0){
-                            if (yueBiResponseEntity.getData().size()> 0){
-                                mAdapter.addData(yueBiResponseEntity.getData());
+                    public void accept(ArrayList<YueBiEntity> yueBiEntities) throws Exception {
+                        dismissProgressBar();
+                        if (yueBiEntities.size()> 0){
+                            mAdapter.addData(yueBiEntities);
+                            mAdapter.loadMoreComplete();
+                        }else {
+                            mAdapter.loadMoreFail();
+                            mAdapter.loadMoreEnd();
+                            if (mCurrentPage== 1){
+                                mAdapter.setEmptyView(R.layout.layout_search_empty);
                             }
                         }
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onFailure(String msg) {
-                        showShortToast(msg);
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissProgressBar();
+                        mAdapter.loadMoreFail();
+                        showShortToast(throwable.toString());
                     }
-                }
-        );
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        dismissProgressBar();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        if (mCurrentPage== 1) showProgressBar();
+                    }
+                }));
+
     }
 
     @Override
     public void onLoadMoreRequested() {
         mCurrentPage+= 1;
-        requestNetData(mCurrentPage);
+        requestNetData();
+    }
+
+    @Override
+    public void initProgressDialog() {
+
+    }
+
+    @Override
+    public void initProgressBar(View view) {
+        mProgressBar= view.findViewById(R.id.progressBar);
     }
 }

@@ -1,5 +1,6 @@
 package com.zheng.zchlibrary.widgets;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import java.util.List;
  * Created by Zheng on 2018/1/8.
  */
 
+@SuppressLint("ValidFragment")
 public class BaseRecyclerFragment<T> extends LazyLoadFragment implements
         SwipeRefreshLayout.OnRefreshListener,
         BaseQuickAdapter.RequestLoadMoreListener{
@@ -76,6 +78,16 @@ public class BaseRecyclerFragment<T> extends LazyLoadFragment implements
             return;
 
         onRefresh();
+    }
+
+    @Override
+    public void initProgressDialog() {
+
+    }
+
+    @Override
+    public void initProgressBar(View view) {
+
     }
 
     public void dismissProgressBar() {

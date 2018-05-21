@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +12,16 @@ import android.widget.TextView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -34,6 +41,18 @@ public class NameSetActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_name_set);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在提交..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -66,27 +85,38 @@ public class NameSetActivity extends BaseActivity implements View.OnClickListene
 
                 LogUtil.d("name", name);
 
-                Network.getInstance().changeName(
-                        MyApplication.appToken,
-                        name,
-                        new IAsyncLoadListener<NameSetEntity>() {
+                addNetWork(Network.getInstance()
+                        .changeName(MyApplication.appToken, name)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onSuccess(NameSetEntity nameSetEntity) {
-                                showShortToast(nameSetEntity.getMsg());
-                                if (nameSetEntity.getCode()== 0){
-                                    Intent intent= new Intent();
-                                    intent.putExtra(UserDetailActivity.DATA_TAG_NAME, name);
-                                    setResult(UserDetailActivity.resultCode_name, intent);
-                                    finish();
-                                    MyApplication.getInstance().loadUser();
-                                }
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("设置成功");
+                                Intent intent= new Intent();
+                                intent.putExtra(UserDetailActivity.DATA_TAG_NAME, name);
+                                setResult(UserDetailActivity.resultCode_name, intent);
+                                finish();
+                                MyApplication.getInstance().loadUser();
                             }
-
+                        }, new Consumer<Throwable>() {
                             @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
                             }
-                        });
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
                 break;
             }

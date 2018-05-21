@@ -51,6 +51,11 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         initUI();
     }
 
+    @Override
+    public void initProgress() {
+
+    }
+
     private void initUI() {
         mBackBtn= findViewById(R.id.toolbar_back);
         mBackBtn.setOnClickListener(this);

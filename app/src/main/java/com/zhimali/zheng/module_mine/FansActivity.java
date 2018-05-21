@@ -14,8 +14,16 @@ import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.FansListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.FansEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -42,6 +50,11 @@ public class FansActivity extends BaseActivity implements
         initUI();
     }
 
+    @Override
+    public void initProgress() {
+        mProgressBar= findViewById(R.id.progressBar);
+    }
+
     private void initUI() {
         mBackBtn= findViewById(R.id.toolbar_back);
         mBackBtn.setOnClickListener(this);
@@ -56,7 +69,7 @@ public class FansActivity extends BaseActivity implements
         mAdapter.setOnLoadMoreListener(this, mRecycler);
         mRecycler.setAdapter(mAdapter);
 
-        getFansList(mCurrentPage);
+        getFansList();
     }
 
     @Override
@@ -73,34 +86,50 @@ public class FansActivity extends BaseActivity implements
         }
     }
 
-    private void getFansList(int page){
-        if (page< 1) return;
-        Network.getInstance().getFans(
-                MyApplication.appToken,
-                20,
-                page,
-                "",
-                new IAsyncLoadListener<FansResponseEntity>() {
+    private void getFansList(){
+
+        addNetWork(Network.getInstance().getFans(MyApplication.appToken, 20, mCurrentPage, "")
+                .compose(ResponseTransformer.changeThread())
+                .compose(ResponseTransformer.handleResult())
+                .subscribe(new Consumer<ArrayList<FansEntity>>() {
                     @Override
-                    public void onSuccess(FansResponseEntity fansResponseEntity) {
-                        showShortToast(fansResponseEntity.getMsg());
-                        if (fansResponseEntity.getCode()== 0){
-                            if (fansResponseEntity.getData().size()> 0){
-                                mAdapter.addData(fansResponseEntity.getData());
+                    public void accept(ArrayList<FansEntity> fansEntities) throws Exception {
+                        dismissProgressBar();
+                        if (fansEntities.size()> 0){
+                            mAdapter.addData(fansEntities);
+                            mAdapter.loadMoreComplete();
+                        }else {
+                            mAdapter.loadMoreFail();
+                            mAdapter.loadMoreEnd();
+                            if (mCurrentPage== 1){
+                                mAdapter.setEmptyView(R.layout.layout_search_empty);
                             }
                         }
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onFailure(String msg) {
-                        showShortToast(msg);
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissProgressBar();
+                        mAdapter.loadMoreFail();
+                        showShortToast(throwable.toString());
                     }
-                });
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        dismissProgressBar();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        if (mCurrentPage== 1) showProgressBar();
+                    }
+                }));
+
     }
 
     @Override
     public void onLoadMoreRequested() {
         mCurrentPage+= 1;
-        getFansList(mCurrentPage);
+        getFansList();
     }
 }

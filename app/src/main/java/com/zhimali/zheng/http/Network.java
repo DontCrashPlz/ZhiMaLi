@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,11 +73,14 @@ public class Network {
     private Network(){
         if (apiService == null) {
             if (mOkHttpClient== null){
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
                 mOkHttpClient= new OkHttpClient.Builder()
-                        .cookieJar(new NovateCookieManger(MyApplication.getInstance()))
+//                        .cookieJar(new NovateCookieManger(MyApplication.getInstance()))
                         .connectTimeout(15, TimeUnit.SECONDS)
                         .writeTimeout(15, TimeUnit.SECONDS)
                         .readTimeout(15,TimeUnit.SECONDS)
+                        .addInterceptor(logging)
                         .build();
             }
             if (mRetrofit== null){

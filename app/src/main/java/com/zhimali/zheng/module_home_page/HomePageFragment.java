@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,8 @@ public class HomePageFragment extends BaseFragment {
                             @Override
                             public void accept(ArrayList<CategoryEntity> categoryEntities) throws Exception {
                                 dismissProgressDialog();
-                                if (cates.size() > 0) {
+                                if (categoryEntities.size() > 0) {
+                                    cates= categoryEntities;
                                     mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
                                         @Override
                                         public Fragment getItem(int position) {
@@ -79,7 +81,6 @@ public class HomePageFragment extends BaseFragment {
                                             return cates.get(position).getCatname();
                                         }
                                     });
-
                                     mTabLayout.setupWithViewPager(mViewPager);
                                 }
                             }

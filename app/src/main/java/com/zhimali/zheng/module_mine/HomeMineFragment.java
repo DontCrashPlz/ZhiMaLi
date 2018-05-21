@@ -203,4 +203,14 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
             mYueBiBtn.setText("阅币");
         }
     }
+
+    @Override
+    public void initProgressDialog() {
+
+    }
+
+    @Override
+    public void initProgressBar(View view) {
+
+    }
 }

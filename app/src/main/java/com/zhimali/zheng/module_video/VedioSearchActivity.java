@@ -28,12 +28,17 @@ import com.zhimali.zheng.dao.DaoSession;
 import com.zhimali.zheng.dao.HistoryData;
 import com.zhimali.zheng.db.GreenDaoHelper;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/28.
@@ -62,6 +67,11 @@ public class VedioSearchActivity extends BaseActivity implements BaseQuickAdapte
         initDao();
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressBar= findViewById(R.id.progressBar);
     }
 
     private void initDao() {
@@ -178,36 +188,43 @@ public class VedioSearchActivity extends BaseActivity implements BaseQuickAdapte
             return;
         }
 
-        Network.getInstance().getNewsList(
-                String.valueOf(17),
-                String.valueOf(page),
-                keyword,
-                new IAsyncLoadListener<NewsListResponseEntity>() {
+        addNetWork(Network.getInstance()
+                .getNewsList("17", String.valueOf(page), keyword)
+                .compose(ResponseTransformer.changeThread())
+                .compose(ResponseTransformer.handleResult())
+                .subscribe(new Consumer<ArrayList<NewsListEntity>>() {
                     @Override
-                    public void onSuccess(NewsListResponseEntity newsListResponseEntity) {
-                        showShortToast(newsListResponseEntity.getMsg());
-                        if (newsListResponseEntity.getCode()== 0){
-                            if (newsListResponseEntity.getData().size()> 0){
-                                mAdapter.addData(newsListResponseEntity.getData());
-                                mAdapter.loadMoreComplete();
-                            }else {
-                                mAdapter.loadMoreComplete();
-                                mAdapter.loadMoreEnd();
-                                if (page== 1){
-                                    mAdapter.setEmptyView(R.layout.layout_search_empty);
-                                }
-                            }
+                    public void accept(ArrayList<NewsListEntity> newsListEntities) throws Exception {
+                        dismissProgressBar();
+                        if (newsListEntities.size()> 0){
+                            mAdapter.addData(newsListEntities);
+                            mAdapter.loadMoreComplete();
                         }else {
                             mAdapter.loadMoreFail();
+                            mAdapter.loadMoreEnd();
+                            if (page== 1){
+                                mAdapter.setEmptyView(R.layout.layout_search_empty);
+                            }
                         }
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onFailure(String msg) {
-                        showShortToast(msg);
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissProgressBar();
                         mAdapter.loadMoreFail();
+                        showShortToast(throwable.toString());
                     }
-                });
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        dismissProgressBar();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        if (mCurrentPage== 1) showProgressBar();
+                    }
+                }));
     }
 
     @Override

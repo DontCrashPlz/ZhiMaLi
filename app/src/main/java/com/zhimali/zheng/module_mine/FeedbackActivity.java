@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -9,9 +10,15 @@ import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.FeedBackEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -31,6 +38,18 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_feedback);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在提交反馈..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -58,21 +77,36 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
                     showShortToast("请输入您的意见");
                     return;
                 }
-                Network.getInstance().sendFeedBack(str, new IAsyncLoadListener<FeedBackEntity>() {
-                    @Override
-                    public void onSuccess(FeedBackEntity feedBackEntity) {
-                        showShortToast(feedBackEntity.getMsg());
-                        if (feedBackEntity.getCode()== 0){
-                            showShortToast(feedBackEntity.getData());
-                            finish();
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(String msg) {
-                        showShortToast(msg);
-                    }
-                });
+                addNetWork(Network.getInstance()
+                        .sendFeedBack(str)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("感谢您的反馈！");
+                                finish();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
+
                 break;
             }
             default:

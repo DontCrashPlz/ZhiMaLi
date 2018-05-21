@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_video;
 
+import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,10 +11,17 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.NewsDetailEntity;
 import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/5/3.
@@ -70,45 +78,75 @@ public class VedioDetailActivity extends BaseActivity {
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webSetting.setSupportZoom(false);// 用于设置webview放大
         webSetting.setBuiltInZoomControls(false);
-//        webSetting.setAllowFileAccess(true);
-//        webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-//        webSetting.setSupportZoom(true);
-//        webSetting.setBuiltInZoomControls(true);
-//        webSetting.setUseWideViewPort(true);
-//        webSetting.setSupportMultipleWindows(false);
-//        // webSetting.setLoadWithOverviewMode(true);
-//        webSetting.setAppCacheEnabled(true);
-//        // webSetting.setDatabaseEnabled(true);
-//        webSetting.setDomStorageEnabled(true);
-//        webSetting.setJavaScriptEnabled(true);
-//        webSetting.setGeolocationEnabled(true);
-//        webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
-//        webSetting.setAppCachePath(this.getDir("appcache", 0).getPath());
-//        webSetting.setDatabasePath(this.getDir("databases", 0).getPath());
-//        webSetting.setGeolocationDatabasePath(this.getDir("geolocation", 0)
-//                .getPath());
-//        // webSetting.setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);
-//        webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
-        // webSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        // webSetting.setPreFectch(true);
 
-        String mToken= "";
-        if (MyApplication.appToken != null && MyApplication.appToken.length()> 0){
-            mToken= MyApplication.appToken;
+        if (MyApplication.getInstance().isHadUser()){//如果用户登录，使用appToken加载新闻详情，并轮询计费接口
+            addNetWork(Network.getInstance()
+                    .getNewsDetail(MyApplication.appToken, id)
+                    .compose(ResponseTransformer.changeThread())
+                    .compose(ResponseTransformer.handleResult())
+                    .subscribe(new Consumer<NewsDetailEntity>() {
+                        @Override
+                        public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
+                            dismissProgressDialog();
+                            mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            showShortToast(throwable.toString());
+                            dismissProgressDialog();
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            dismissProgressDialog();
+                        }
+                    }, new Consumer<Disposable>() {
+                        @Override
+                        public void accept(Disposable disposable) throws Exception {
+                            showProgressDialog();
+                        }
+                    }));
+            //todo 轮询计费接口
+        }else{//如果没有用户登录，使用空appToken加载新闻详情，不轮询计费接口
+            addNetWork(Network.getInstance()
+                    .getNewsDetail("", id)
+                    .compose(ResponseTransformer.changeThread())
+                    .compose(ResponseTransformer.handleResult())
+                    .subscribe(new Consumer<NewsDetailEntity>() {
+                        @Override
+                        public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
+                            dismissProgressDialog();
+                            mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            showShortToast(throwable.toString());
+                            dismissProgressDialog();
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            dismissProgressDialog();
+                        }
+                    }, new Consumer<Disposable>() {
+                        @Override
+                        public void accept(Disposable disposable) throws Exception {
+                            showProgressDialog();
+                        }
+                    }));
         }
-        Network.getInstance().getNewsDetail(mToken, id, new IAsyncLoadListener<NewsDetailResponseEntity>() {
-            @Override
-            public void onSuccess(NewsDetailResponseEntity newsDetailResponseEntity) {
-                showShortToast(newsDetailResponseEntity.getMsg());
-                if (newsDetailResponseEntity.getCode()== 0){
-                    mWebView.loadDataWithBaseURL(null, newsDetailResponseEntity.getData().getContent(), "text/html", "utf-8", null);
-//                    mWebView.loadData(newsDetailResponseEntity.getData().getContent(), "text/html", "uft-8");
-                }
-            }
+    }
 
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在加载视频..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onFailure(String msg) {
-                showShortToast(msg);
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
             }
         });
     }

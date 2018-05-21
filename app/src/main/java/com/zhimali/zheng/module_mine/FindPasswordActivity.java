@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,9 +12,15 @@ import android.widget.TextView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -37,6 +44,18 @@ public class FindPasswordActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_find_password);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在重置密码..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -109,26 +128,34 @@ public class FindPasswordActivity extends BaseActivity implements View.OnClickLi
                 LogUtil.d("yanZhengMa", yanZhengMa);
                 LogUtil.d("password", password);
 
-                Network.getInstance().resetPassword(
-                        mobileNum,
-                        password,
-                        password2,
-                        yanZhengMa,
-                        new IAsyncLoadListener<FindPasswordEntity>() {
+                addNetWork(Network.getInstance()
+                        .resetPassword(mobileNum, password, password2, yanZhengMa)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onSuccess(FindPasswordEntity findPasswordEntity) {
-                                showShortToast(findPasswordEntity.getMsg());
-                                if (findPasswordEntity.getCode()== 0){
-                                    finish();
-                                }
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("密码已重置");
+                                finish();
                             }
-
+                        }, new Consumer<Throwable>() {
                             @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
                             }
-                        }
-                );
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
                 break;
             }

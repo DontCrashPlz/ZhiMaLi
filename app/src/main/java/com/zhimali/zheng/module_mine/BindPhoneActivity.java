@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,16 @@ import android.widget.TextView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.BindMobileEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -38,6 +45,18 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_bind_phone);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在绑定手机..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -90,28 +109,38 @@ public class BindPhoneActivity extends BaseActivity implements View.OnClickListe
                 LogUtil.d("mobileNum", mobileNum);
                 LogUtil.d("yanZhengMa", yanZhengMa);
 
-                Network.getInstance().bindMobile(
-                        MyApplication.appToken,
-                        mobileNum,
-                        yanZhengMa,
-                        new IAsyncLoadListener<BindMobileEntity>() {
+                addNetWork(Network.getInstance()
+                        .bindMobile(MyApplication.appToken, mobileNum, yanZhengMa)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onSuccess(BindMobileEntity bindMobileEntity) {
-                                showShortToast(bindMobileEntity.getMsg());
-                                if (bindMobileEntity.getCode()== 0){
-                                    Intent intent= new Intent();
-                                    intent.putExtra(UserDetailActivity.DATA_TAG_MOBILE, mobileNum);
-                                    setResult(UserDetailActivity.resultCode_mobile, intent);
-                                    finish();
-                                    MyApplication.getInstance().loadUser();
-                                }
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                Intent intent= new Intent();
+                                intent.putExtra(UserDetailActivity.DATA_TAG_MOBILE, mobileNum);
+                                setResult(UserDetailActivity.resultCode_mobile, intent);
+                                finish();
+                                MyApplication.getInstance().loadUser();
                             }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
-                            @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
-                            }
-                        });
                 break;
             }
             default:

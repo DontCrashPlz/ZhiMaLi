@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +15,16 @@ import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.LoginEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -44,6 +51,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_login);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在登录..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -91,26 +110,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     showShortToast("请输入密码");
                     return;
                 }
-                Network.getInstance().doLogin(
-                        username,
-                        password,
-                        new IAsyncLoadListener<LoginEntity>() {
-                            @Override
-                            public void onSuccess(LoginEntity loginEntity) {
-                                showShortToast(loginEntity.getMsg());
-                                if (loginEntity.getCode()== 0){
-                                    LogUtil.d("register data", loginEntity.getData());
-                                    MyApplication.getInstance().setToken(loginEntity.getData());
-                                    MyApplication.getInstance().loadUser();
-                                    finish();
-                                }
-                            }
 
+                addNetWork(Network.getInstance().doLogin(username, password)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
+                            public void accept(String str) throws Exception {
+                                dismissProgressDialog();
+                                LogUtil.d("register data", str);
+                                MyApplication.getInstance().setToken(str);
+                                MyApplication.getInstance().loadUser();
+                                finish();
                             }
-                        });
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
                 break;
             }
             case R.id.login_btn_register:{

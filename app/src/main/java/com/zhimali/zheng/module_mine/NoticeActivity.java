@@ -30,6 +30,11 @@ public class NoticeActivity extends BaseActivity implements View.OnClickListener
         initUI();
     }
 
+    @Override
+    public void initProgress() {
+
+    }
+
     private void initUI() {
         mBackBtn= findViewById(R.id.toolbar_back);
         mBackBtn.setOnClickListener(this);

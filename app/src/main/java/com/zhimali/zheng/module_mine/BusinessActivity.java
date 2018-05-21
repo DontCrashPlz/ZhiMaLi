@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,10 +11,16 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.AboutUsEntity;
 import com.zhimali.zheng.bean.BusinessEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -33,6 +40,18 @@ public class BusinessActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_business);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在加载..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -61,25 +80,34 @@ public class BusinessActivity extends BaseActivity implements View.OnClickListen
         webSetting.setSupportZoom(false);// 用于设置webview放大
         webSetting.setBuiltInZoomControls(false);
 
-        Network.getInstance().getBusiness(new IAsyncLoadListener<BusinessEntity>() {
-            @Override
-            public void onSuccess(BusinessEntity businessEntity) {
-                showShortToast(businessEntity.getMsg());
-                if (businessEntity.getCode()== 0){
-                    mWebView.loadDataWithBaseURL(
-                            null,
-                            businessEntity.getData(),
-                            "text/html",
-                            "utf-8",
-                            null);
-                }
-            }
+        addNetWork(Network.getInstance()
+                .getBusiness()
+                .compose(ResponseTransformer.changeThread())
+                .compose(ResponseTransformer.handleResult())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        dismissProgressDialog();
+                        mWebView.loadDataWithBaseURL(null, s, "text/html", "utf-8", null);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissProgressDialog();
+                        showShortToast(throwable.toString());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        dismissProgressDialog();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showProgressDialog();
+                    }
+                }));
 
-            @Override
-            public void onFailure(String msg) {
-                showShortToast(msg);
-            }
-        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -12,11 +13,17 @@ import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.YanZhengMaEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -41,6 +48,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_register);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在注册..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -116,29 +135,35 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 LogUtil.d("password", password);
                 LogUtil.d("inviteCode", inviteCode);
 
-                Network.getInstance().doRegister(
-                        mobileNum,
-                        yanZhengMa,
-                        password,
-                        inviteCode,
-                        new IAsyncLoadListener<RegisterEntity>() {
+                addNetWork(Network.getInstance()
+                        .doRegister(mobileNum, yanZhengMa, password, inviteCode)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onSuccess(RegisterEntity registerEntity) {
-                                showShortToast(registerEntity.getMsg());
-                                if (registerEntity.getCode()== 0){
-                                    LogUtil.d("register data", registerEntity.getData());
-                                    SharedPrefUtils.put(
-                                            getRealContext(),
-                                            MyApplication.TOKEN_TAG,
-                                            registerEntity.getData());
-                                }
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                LogUtil.d("register data", s);
+                                MyApplication.getInstance().setToken(s);
+                                MyApplication.getInstance().loadUser();
                             }
-
+                        }, new Consumer<Throwable>() {
                             @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
                             }
-                        });
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
                 break;
             }

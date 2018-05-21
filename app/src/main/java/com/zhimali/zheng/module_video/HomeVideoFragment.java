@@ -15,8 +15,16 @@ import com.zheng.zchlibrary.apps.BaseFragment;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.VedioListAdapter;
+import com.zhimali.zheng.bean.NewsListEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -62,51 +70,69 @@ public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.
         mAdapter.setOnLoadMoreListener(this, mRecycler);
         mRecycler.setAdapter(mAdapter);
 
-        requestNetData(mCurrentPage);
+        requestNetData();
 
     }
 
-    private void requestNetData(final int page){
-        if (page< 1 ) {
-            showShortToast("无效网络请求");
-            return;
-        }
+    private void requestNetData(){
+//        if (mCurrentPage< 1 ) {
+//            showShortToast("无效网络请求");
+//            return;
+//        }
 
-        Network.getInstance().getNewsList(
-                String.valueOf(17),
-                String.valueOf(page),
-                null,
-                new IAsyncLoadListener<NewsListResponseEntity>() {
-                    @Override
-                    public void onSuccess(NewsListResponseEntity newsListResponseEntity) {
-                        showShortToast(newsListResponseEntity.getMsg());
-                        if (newsListResponseEntity.getCode()== 0){
-                            if (newsListResponseEntity.getData().size()> 0){
-                                mAdapter.addData(newsListResponseEntity.getData());
-                                mAdapter.loadMoreComplete();
-                            }else {
-                                mAdapter.loadMoreComplete();
-                                mAdapter.loadMoreEnd();
-                                if (page== 1){
-                                    mAdapter.setEmptyView(R.layout.layout_search_empty);
+        addNetWork(
+                Network.getInstance().getNewsList(String.valueOf(17), String.valueOf(mCurrentPage), null)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<ArrayList<NewsListEntity>>() {
+                            @Override
+                            public void accept(ArrayList<NewsListEntity> newsListEntities) throws Exception {
+                                dismissProgressBar();
+                                if (newsListEntities.size()> 0){
+                                    mAdapter.addData(newsListEntities);
+                                    mAdapter.loadMoreComplete();
+                                }else {
+                                    mAdapter.loadMoreFail();
+                                    mAdapter.loadMoreEnd();
+                                    if (mCurrentPage== 1){
+                                        mAdapter.setEmptyView(R.layout.layout_search_empty);
+                                    }
                                 }
                             }
-                        }else {
-                            mAdapter.loadMoreFail();
-                        }
-                    }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressBar();
+                                mAdapter.loadMoreFail();
+                                showShortToast(throwable.toString());
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressBar();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                if (mCurrentPage== 1) showProgressBar();
+                            }
+                        }));
 
-                    @Override
-                    public void onFailure(String msg) {
-                        showShortToast(msg);
-                        mAdapter.loadMoreFail();
-                    }
-                });
     }
 
     @Override
     public void onLoadMoreRequested() {
         mCurrentPage+= 1;
-        requestNetData(mCurrentPage);
+        requestNetData();
+    }
+
+    @Override
+    public void initProgressDialog() {
+
+    }
+
+    @Override
+    public void initProgressBar(View view) {
+        mProgressBar= view.findViewById(R.id.progressBar);
     }
 }

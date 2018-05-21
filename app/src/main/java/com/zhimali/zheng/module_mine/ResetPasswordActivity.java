@@ -1,5 +1,7 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,10 +13,16 @@ import android.widget.TextView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -38,6 +46,18 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.activity_find_password);
 
         initUI();
+    }
+
+    @Override
+    public void initProgress() {
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在提交..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -110,26 +130,34 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
                 LogUtil.d("yanZhengMa", yanZhengMa);
                 LogUtil.d("password", password);
 
-                Network.getInstance().changePassword(
-                        MyApplication.appToken,
-                        mobileNum,
-                        password,
-                        password2,
-                        yanZhengMa,
-                        new IAsyncLoadListener<ChangePasswordEntity>() {
+                addNetWork(Network.getInstance()
+                        .changePassword(MyApplication.appToken, mobileNum, password, password2, yanZhengMa)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<String>() {
                             @Override
-                            public void onSuccess(ChangePasswordEntity changePasswordEntity) {
-                                showShortToast(changePasswordEntity.getMsg());
-                                if (changePasswordEntity.getCode()== 0){
-                                    finish();
-                                }
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("设置成功");
+                                finish();
                             }
-
+                        }, new Consumer<Throwable>() {
                             @Override
-                            public void onFailure(String msg) {
-                                showShortToast(msg);
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(throwable.toString());
                             }
-                        });
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                dismissProgressDialog();
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                showProgressDialog();
+                            }
+                        }));
 
                 break;
             }
