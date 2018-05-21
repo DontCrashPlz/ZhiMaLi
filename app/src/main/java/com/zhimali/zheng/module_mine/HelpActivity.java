@@ -1,14 +1,29 @@
 package com.zhimali.zheng.module_mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.adapter.HelpListAdapter;
+import com.zhimali.zheng.adapter.NoticeListAdapter;
+import com.zhimali.zheng.bean.HelpEntity;
+import com.zhimali.zheng.bean.NoticeEntity;
+import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
+
+import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -21,6 +36,7 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
     private TextView mFuncationTv;
 
     private RecyclerView mRecycler;
+    private HelpListAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +48,14 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void initProgress() {
-
+        mProgressDialog= new ProgressDialog(getRealContext());
+        mProgressDialog.setLabel("正在加载..");
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                clearNetWork();
+            }
+        });
     }
 
     private void initUI() {
@@ -44,6 +67,41 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
         mFuncationTv.setVisibility(View.GONE);
 
         mRecycler= findViewById(R.id.notice_recycler);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
+        mAdapter= new HelpListAdapter(R.layout.item_notice);
+        mAdapter.bindToRecyclerView(mRecycler);
+        mRecycler.setAdapter(mAdapter);
+
+        addNetWork(Network.getInstance().getHelpList()
+                .compose(ResponseTransformer.changeThread())
+                .compose(ResponseTransformer.handleResult())
+                .subscribe(new Consumer<ArrayList<HelpEntity>>() {
+                    @Override
+                    public void accept(ArrayList<HelpEntity> helpEntities) throws Exception {
+                        dismissProgressDialog();
+                        if (helpEntities.size()> 0){
+                            mAdapter.addData(helpEntities);
+                        }else {
+                            mAdapter.setEmptyView(R.layout.layout_search_empty);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissProgressDialog();
+                        showShortToast(throwable.toString());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        dismissProgressDialog();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showProgressDialog();
+                    }
+                }));
     }
 
     @Override

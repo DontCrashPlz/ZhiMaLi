@@ -144,11 +144,11 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_rly_notice:{
-
+                startActivity(new Intent(getRealContext(), NoticeActivity.class));
                 break;
             }
             case R.id.mine_rly_help:{
-
+                startActivity(new Intent(getRealContext(), HelpActivity.class));
                 break;
             }
             case R.id.mine_rly_business:{

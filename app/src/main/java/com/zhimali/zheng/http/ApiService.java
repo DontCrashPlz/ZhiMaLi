@@ -126,5 +126,10 @@ public interface ApiService {
 
     //25 http://www.52zhimali.com/index.php?m=mobile&c=help&a=help_detail
     @GET("/index.php")
-    Observable<HttpResult<ArrayList<HelpDetailEntity>>> getHelpDetail(@QueryMap Map<String, String> params);
+    Observable<HttpResult<HelpDetailEntity>> getHelpDetail(@QueryMap Map<String, String> params);
+
+    //26 http://www.52zhimali.com/index.php?m=mobile&c=content&a=news_view_charge
+    @GET("/index.php")
+    Observable<HttpResult<String>> doCharge(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
 }

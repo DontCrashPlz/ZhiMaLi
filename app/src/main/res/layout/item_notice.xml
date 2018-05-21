@@ -7,7 +7,9 @@
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp">
+    android:paddingRight="15dp"
+    android:id="@+id/item_notice_panel"
+    android:clickable="true">
     <TextView
         android:id="@+id/item_notice_title"
         android:layout_width="match_parent"

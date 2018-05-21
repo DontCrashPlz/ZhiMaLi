@@ -12,6 +12,7 @@ import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.bean.HelpDetailEntity;
 import com.zhimali.zheng.bean.NoticeDetailEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
@@ -24,7 +25,7 @@ import io.reactivex.functions.Consumer;
  * Created by Zheng on 2018/4/19.
  */
 
-public class NoticeDetailActivity extends BaseActivity implements View.OnClickListener {
+public class HelpDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView mBackBtn;
     private TextView mTitleTv;
@@ -32,15 +33,15 @@ public class NoticeDetailActivity extends BaseActivity implements View.OnClickLi
 
     private WebView mWebView;
 
-    private String mNoticeId;
+    private String mHelpId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_detail);
 
-        mNoticeId= getIntent().getStringExtra("id");
-        if (mNoticeId== null || mNoticeId.length()< 1){
+        mHelpId= getIntent().getStringExtra("id");
+        if (mHelpId== null || mHelpId.length()< 1){
             showShortToast("无效的公告");
             finish();
             return;
@@ -88,14 +89,14 @@ public class NoticeDetailActivity extends BaseActivity implements View.OnClickLi
         webSetting.setBuiltInZoomControls(false);
 
         addNetWork(Network.getInstance()
-                .getNoticeDetail(mNoticeId)
+                .getHelpDetail(mHelpId)
                 .compose(ResponseTransformer.changeThread())
                 .compose(ResponseTransformer.handleResult())
-                .subscribe(new Consumer<NoticeDetailEntity>() {
+                .subscribe(new Consumer<HelpDetailEntity>() {
                     @Override
-                    public void accept(NoticeDetailEntity noticeDetailEntity) throws Exception {
+                    public void accept(HelpDetailEntity helpDetailEntity) throws Exception {
                         dismissProgressDialog();
-                        mWebView.loadDataWithBaseURL(null, noticeDetailEntity.getContent(), "text/html", "utf-8", null);
+                        mWebView.loadDataWithBaseURL(null, helpDetailEntity.getContent(), "text/html", "utf-8", null);
                     }
                 }, new Consumer<Throwable>() {
                     @Override

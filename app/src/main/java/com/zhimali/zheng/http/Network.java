@@ -18,6 +18,8 @@ import com.zhimali.zheng.bean.FansEntity;
 import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.bean.FeedBackEntity;
 import com.zhimali.zheng.bean.FindPasswordEntity;
+import com.zhimali.zheng.bean.HelpDetailEntity;
+import com.zhimali.zheng.bean.HelpEntity;
 import com.zhimali.zheng.bean.HttpResult;
 import com.zhimali.zheng.bean.InviteCodeEntity;
 import com.zhimali.zheng.bean.LoginEntity;
@@ -26,6 +28,8 @@ import com.zhimali.zheng.bean.NewsDetailEntity;
 import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.bean.NewsListEntity;
 import com.zhimali.zheng.bean.NewsListResponseEntity;
+import com.zhimali.zheng.bean.NoticeDetailEntity;
+import com.zhimali.zheng.bean.NoticeEntity;
 import com.zhimali.zheng.bean.RegisterEntity;
 import com.zhimali.zheng.bean.SignInEntity;
 import com.zhimali.zheng.bean.TiXianEntity;
@@ -120,6 +124,22 @@ public class Network {
         Map<String, String> baseParamMap= new HashMap<>();
         baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
         baseParamMap.put(NetParams.PARAM2, NetParams.VALUE4);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getNoticeParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE5);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getHelpParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE6);
         baseParamMap.put(NetParams.PARAM_TAG, networkTag);
         return baseParamMap;
     }
@@ -438,6 +458,60 @@ public class Network {
         Map<String, String> params=
                 getOtherParamMap(NetParams.TAG_BUSINESS);
         return apiService.getBusiness(params);
+    }
+
+    /**
+     * 22 公告列表
+     */
+    public Observable<HttpResult<ArrayList<NoticeEntity>>> getNoticeList(){
+        Map<String, String> params=
+                getNoticeParamMap(NetParams.TAG_NOTICE_LIST);
+        return apiService.getNoticeList(params);
+    }
+
+    /**
+     * 23 公告详情
+     */
+    public Observable<HttpResult<NoticeDetailEntity>> getNoticeDetail(String id){
+        Map<String, String> params=
+                getNoticeParamMap(NetParams.TAG_NOTICE_DETAIL);
+        params.put("id", id);
+        return apiService.getNoticeDetail(params);
+    }
+
+    /**
+     * 24 帮助列表
+     */
+    public Observable<HttpResult<ArrayList<HelpEntity>>> getHelpList(){
+        Map<String, String> params=
+                getHelpParamMap(NetParams.TAG_HELP_LIST);
+        return apiService.getHelpList(params);
+    }
+
+    /**
+     * 25 帮助详情
+     */
+    public Observable<HttpResult<HelpDetailEntity>> getHelpDetail(String id){
+        Map<String, String> params=
+                getHelpParamMap(NetParams.TAG_HELP_DETAIL);
+        params.put("id", id);
+        return apiService.getHelpDetail(params);
+    }
+
+    /**
+     * 26 计费
+     * @param token
+     */
+    public Observable<HttpResult<String>> doCharge(
+            String token,
+            String viewId){
+        Map<String, String> params=
+                getContentParamMap(NetParams.TAG_DO_CHARGE);
+        params.put("view_id", viewId);
+        if (MyApplication.uuid!= null && MyApplication.uuid.length()> 0){
+            params.put("uuid", MyApplication.uuid);
+        }
+        return apiService.doCharge(token, params);
     }
 
 }

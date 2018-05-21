@@ -40,4 +40,5 @@ public class NetParams {
     public static final String TAG_NOTICE_DETAIL= "notice_detail";//23
     public static final String TAG_HELP_LIST= "help_list";//24
     public static final String TAG_HELP_DETAIL= "help_detail";//25
+    public static final String TAG_DO_CHARGE= "news_view_charge";//26
 }

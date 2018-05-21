@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -11,17 +12,26 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.HttpResult;
 import com.zhimali.zheng.bean.NewsDetailEntity;
 import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Zheng on 2018/5/3.
@@ -30,6 +40,8 @@ import io.reactivex.functions.Consumer;
 public class NewsDetailActivity extends BaseActivity {
 
     private String id;
+
+    private int viewId;
 
     private ImageView mBackIv;
     private ImageView mShareIv;
@@ -110,6 +122,7 @@ public class NewsDetailActivity extends BaseActivity {
                         public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
                             dismissProgressDialog();
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
+                            viewId= newsDetailEntity.getView_id();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -129,6 +142,26 @@ public class NewsDetailActivity extends BaseActivity {
                         }
                     }));
             //todo 轮询计费接口
+            addNetWork(Observable.interval(5, 5, TimeUnit.SECONDS)
+                    .compose(ResponseTransformer.changeThread())
+                    .compose(ResponseTransformer.handleResult())
+                    .flatMap(new Function<Long, ObservableSource<HttpResult<String>>>() {
+                        @Override
+                        public ObservableSource<HttpResult<String>> apply(Long aLong) throws Exception {
+                            return Network.getInstance().doCharge(MyApplication.appToken, String.valueOf(viewId));
+                        }
+                    })
+                    .subscribe(new Consumer<HttpResult<String>>() {
+                        @Override
+                        public void accept(HttpResult<String> stringHttpResult) throws Exception {
+                            showShortToast(stringHttpResult.toString());
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            showShortToast(throwable.toString());
+                        }
+                    }));
         }else{//如果没有用户登录，使用空appToken加载新闻详情，不轮询计费接口
             addNetWork(Network.getInstance()
                     .getNewsDetail("", id)

@@ -60,6 +60,9 @@
         <activity android:name=".module_mine.HelpActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".module_mine.HelpDetailActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".module_mine.NoticeActivity"
             android:screenOrientation="portrait"/>
 
