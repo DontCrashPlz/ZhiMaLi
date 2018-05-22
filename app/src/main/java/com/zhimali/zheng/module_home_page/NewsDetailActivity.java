@@ -90,71 +90,34 @@ public class NewsDetailActivity extends BaseActivity {
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webSetting.setSupportZoom(false);// 用于设置webview放大
         webSetting.setBuiltInZoomControls(false);
-//        webSetting.setAllowFileAccess(true);
-//        webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-//        webSetting.setSupportZoom(true);
-//        webSetting.setBuiltInZoomControls(true);
-//        webSetting.setUseWideViewPort(true);
-//        webSetting.setSupportMultipleWindows(false);
-//        // webSetting.setLoadWithOverviewMode(true);
-//        webSetting.setAppCacheEnabled(true);
-//        // webSetting.setDatabaseEnabled(true);
-//        webSetting.setDomStorageEnabled(true);
-//        webSetting.setJavaScriptEnabled(true);
-//        webSetting.setGeolocationEnabled(true);
-//        webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
-//        webSetting.setAppCachePath(this.getDir("appcache", 0).getPath());
-//        webSetting.setDatabasePath(this.getDir("databases", 0).getPath());
-//        webSetting.setGeolocationDatabasePath(this.getDir("geolocation", 0)
-//                .getPath());
-//        // webSetting.setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);
-//        webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
-        // webSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        // webSetting.setPreFectch(true);
 
         if (MyApplication.getInstance().isHadUser()){//如果用户登录，使用appToken加载新闻详情，并轮询计费接口
             addNetWork(Network.getInstance()
                     .getNewsDetail(MyApplication.appToken, id)
                     .compose(ResponseTransformer.changeThread())
                     .compose(ResponseTransformer.handleResult())
-                    .subscribe(new Consumer<NewsDetailEntity>() {
+                    .flatMap(new Function<NewsDetailEntity, ObservableSource<String>>() {
                         @Override
-                        public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
-                            dismissProgressDialog();
+                        public ObservableSource<String> apply(NewsDetailEntity newsDetailEntity) throws Exception {
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                             viewId= newsDetailEntity.getView_id();
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            showShortToast(throwable.toString());
-                            dismissProgressDialog();
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            dismissProgressDialog();
-                        }
-                    }, new Consumer<Disposable>() {
-                        @Override
-                        public void accept(Disposable disposable) throws Exception {
-                            showProgressDialog();
-                        }
-                    }));
-            //todo 轮询计费接口
-            addNetWork(Observable.interval(5, 5, TimeUnit.SECONDS)
-                    .compose(ResponseTransformer.changeThread())
-                    .compose(ResponseTransformer.handleResult())
-                    .flatMap(new Function<Long, ObservableSource<HttpResult<String>>>() {
-                        @Override
-                        public ObservableSource<HttpResult<String>> apply(Long aLong) throws Exception {
-                            return Network.getInstance().doCharge(MyApplication.appToken, String.valueOf(viewId));
+                            return Observable.interval(5, 5, TimeUnit.SECONDS)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(Schedulers.io())
+                                    .flatMap(new Function<Long, ObservableSource<String>>() {
+                                        @Override
+                                        public ObservableSource<String> apply(Long aLong) throws Exception {
+                                            return Network.getInstance().doCharge(MyApplication.appToken, String.valueOf(viewId))
+                                                    .compose(ResponseTransformer.changeThread())
+                                                    .compose(ResponseTransformer.handleResult());
+                                        }
+                                    });
                         }
                     })
-                    .subscribe(new Consumer<HttpResult<String>>() {
+                    .subscribe(new Consumer<String>() {
                         @Override
-                        public void accept(HttpResult<String> stringHttpResult) throws Exception {
-                            showShortToast(stringHttpResult.toString());
+                        public void accept(String s) throws Exception {
+                            showShortToast(s);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
