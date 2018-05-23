@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -23,6 +24,7 @@ import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.LongFunction;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -45,12 +47,13 @@ public class NewsDetailActivity extends BaseActivity {
 
     private ImageView mBackIv;
     private ImageView mShareIv;
+    private TextView mNewsTitleTv;
     private WebView mWebView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vedio_detail);
+        setContentView(R.layout.activity_news_detail);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
 
         id= getIntent().getStringExtra("id");
@@ -73,7 +76,8 @@ public class NewsDetailActivity extends BaseActivity {
                 showShortToast("分享");
             }
         });
-        mWebView= findViewById(R.id.vedio_detail_webview);
+        mNewsTitleTv= findViewById(R.id.news_detail_title);
+        mWebView= findViewById(R.id.news_detail_webview);
         WebSettings webSetting = mWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);
         // 设置文本编码
@@ -92,37 +96,57 @@ public class NewsDetailActivity extends BaseActivity {
         webSetting.setBuiltInZoomControls(false);
 
         if (MyApplication.getInstance().isHadUser()){//如果用户登录，使用appToken加载新闻详情，并轮询计费接口
+            //todo 请求新闻详情
             addNetWork(Network.getInstance()
                     .getNewsDetail(MyApplication.appToken, id)
                     .compose(ResponseTransformer.changeThread())
                     .compose(ResponseTransformer.handleResult())
-                    .flatMap(new Function<NewsDetailEntity, ObservableSource<String>>() {
+                    .subscribe(new Consumer<NewsDetailEntity>() {
                         @Override
-                        public ObservableSource<String> apply(NewsDetailEntity newsDetailEntity) throws Exception {
+                        public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
+                            dismissProgressDialog();
+                            mNewsTitleTv.setText(newsDetailEntity.getTitle());
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                             viewId= newsDetailEntity.getView_id();
-                            return Observable.interval(5, 5, TimeUnit.SECONDS)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(Schedulers.io())
-                                    .flatMap(new Function<Long, ObservableSource<String>>() {
-                                        @Override
-                                        public ObservableSource<String> apply(Long aLong) throws Exception {
-                                            return Network.getInstance().doCharge(MyApplication.appToken, String.valueOf(viewId))
-                                                    .compose(ResponseTransformer.changeThread())
-                                                    .compose(ResponseTransformer.handleResult());
-                                        }
-                                    });
-                        }
-                    })
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                            showShortToast(s);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             showShortToast(throwable.toString());
+                            dismissProgressDialog();
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            dismissProgressDialog();
+                        }
+                    }, new Consumer<Disposable>() {
+                        @Override
+                        public void accept(Disposable disposable) throws Exception {
+                            showProgressDialog();
+                        }
+                    }));
+            //todo 请求计费接口
+            addNetWork(Observable.interval(5, 5, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Function<Long, ObservableSource<HttpResult<String>>>() {
+                        @Override
+                        public ObservableSource<HttpResult<String>> apply(Long aLong) throws Exception {
+                            return Network.getInstance()
+                                    .doCharge(MyApplication.appToken, String.valueOf(viewId));
+                        }
+                    })
+                    .compose(ResponseTransformer.<String>handleResult())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            LogUtil.d("计费成功: ", s);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            LogUtil.d("计费失败: ", throwable.toString());
                         }
                     }));
         }else{//如果没有用户登录，使用空appToken加载新闻详情，不轮询计费接口
@@ -160,11 +184,5 @@ public class NewsDetailActivity extends BaseActivity {
     public void initProgress() {
         mProgressDialog= new ProgressDialog(getRealContext());
         mProgressDialog.setLabel("正在加载新闻..");
-        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                clearNetWork();
-            }
-        });
     }
 }

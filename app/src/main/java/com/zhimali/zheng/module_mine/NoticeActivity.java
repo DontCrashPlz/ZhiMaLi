@@ -80,7 +80,7 @@ public class NoticeActivity extends BaseActivity implements View.OnClickListener
                         if (noticeEntities.size()> 0){
                             mAdapter.addData(noticeEntities);
                         }else {
-                            mAdapter.setEmptyView(R.layout.layout_search_empty);
+                            mAdapter.setEmptyView(R.layout.jz_layout_clarity_item);
                         }
                     }
                 }, new Consumer<Throwable>() {
