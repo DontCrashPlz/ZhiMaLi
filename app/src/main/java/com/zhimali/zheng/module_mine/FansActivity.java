@@ -10,12 +10,10 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseActivity;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.FansListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.FansEntity;
-import com.zhimali.zheng.bean.FansResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 

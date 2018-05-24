@@ -1,10 +1,10 @@
 package com.zhimali.zheng.module_home_page;
 
-import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,19 +12,20 @@ import android.widget.TextView;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
+import com.zhimali.zheng.adapter.PosterListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.HttpResult;
 import com.zhimali.zheng.bean.NewsDetailEntity;
-import com.zhimali.zheng.bean.NewsDetailResponseEntity;
+import com.zhimali.zheng.bean.PosterEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
+import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.function.LongFunction;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -49,6 +50,8 @@ public class NewsDetailActivity extends BaseActivity {
     private ImageView mShareIv;
     private TextView mNewsTitleTv;
     private WebView mWebView;
+    private RecyclerView mRecycler;
+    private PosterListAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +81,12 @@ public class NewsDetailActivity extends BaseActivity {
         });
         mNewsTitleTv= findViewById(R.id.news_detail_title);
         mWebView= findViewById(R.id.news_detail_webview);
+        mRecycler= findViewById(R.id.news_detail_recycler);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
+        mAdapter= new PosterListAdapter(R.layout.item_poster_list);
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new MyNewsListItemDecoration(15));
+
         WebSettings webSetting = mWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);
         // 设置文本编码
@@ -158,6 +167,7 @@ public class NewsDetailActivity extends BaseActivity {
                         @Override
                         public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
                             dismissProgressDialog();
+                            mNewsTitleTv.setText(newsDetailEntity.getTitle());
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                         }
                     }, new Consumer<Throwable>() {
@@ -178,6 +188,26 @@ public class NewsDetailActivity extends BaseActivity {
                         }
                     }));
         }
+
+        addNetWork(Network.getInstance().getPosterList("12")
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(ResponseTransformer.<ArrayList<PosterEntity>>handleResult())
+                .subscribe(new Consumer<ArrayList<PosterEntity>>() {
+                    @Override
+                    public void accept(ArrayList<PosterEntity> posterEntities) throws Exception {
+                        if (posterEntities!= null && posterEntities.size()> 0){
+                            mAdapter.addData(posterEntities);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        showShortToast(throwable.toString());
+                    }
+                }));
+
     }
 
     @Override

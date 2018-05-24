@@ -1,14 +1,13 @@
 package com.zhimali.zheng.apps;
 
+import android.os.Build;
 import android.widget.Toast;
 
 import com.zheng.zchlibrary.apps.BaseApplication;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.ScreenUtils;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.bean.UserEntity;
-import com.zhimali.zheng.bean.UserResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -45,6 +44,8 @@ public class MyApplication extends BaseApplication {
 
         sw= String.valueOf(ScreenUtils.getScreenWidth(this));
         sh= String.valueOf(ScreenUtils.getScreenHeight(this));
+        uuid= getPesudoUniqueID();
+        LogUtil.d("应用初始化： ", "屏幕宽度:" + sw + "; 屏幕高度:" + sh + "; 设备唯一标识:"+ uuid + ";");
     }
 
     //根据本地保存的token加载用户
@@ -133,6 +134,28 @@ public class MyApplication extends BaseApplication {
                         }
                     });
         }
+    }
+
+    /**
+     * 获取设备唯一标识
+     * @return
+     */
+    private String getPesudoUniqueID() {
+        String m_szDevIDShort = "35" + //we make this look like a valid IMEI
+                Build.BOARD.length() % 10 +
+                Build.BRAND.length() % 10 +
+                Build.CPU_ABI.length() % 10 +
+                Build.DEVICE.length() % 10 +
+                Build.DISPLAY.length() % 10 +
+                Build.HOST.length() % 10 +
+                Build.ID.length() % 10 +
+                Build.MANUFACTURER.length() % 10 +
+                Build.MODEL.length() % 10 +
+                Build.PRODUCT.length() % 10 +
+                Build.TAGS.length() % 10 +
+                Build.TYPE.length() % 10 +
+                Build.USER.length() % 10; //13 digits
+        return m_szDevIDShort;
     }
 
 }

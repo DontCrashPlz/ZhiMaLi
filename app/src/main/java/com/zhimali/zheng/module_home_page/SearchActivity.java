@@ -1,6 +1,5 @@
 package com.zhimali.zheng.module_home_page;
 
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -18,15 +16,11 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseActivity;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.widgets.CustomTabLayout.Tool;
-import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.SearchListAdapter;
-import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.NewsListEntity;
-import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.dao.DaoMaster;
 import com.zhimali.zheng.dao.DaoSession;
 import com.zhimali.zheng.dao.HistoryData;

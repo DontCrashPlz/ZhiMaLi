@@ -9,6 +9,7 @@ import com.zhimali.zheng.bean.NewsDetailEntity;
 import com.zhimali.zheng.bean.NewsListEntity;
 import com.zhimali.zheng.bean.NoticeDetailEntity;
 import com.zhimali.zheng.bean.NoticeEntity;
+import com.zhimali.zheng.bean.PosterEntity;
 import com.zhimali.zheng.bean.UserEntity;
 import com.zhimali.zheng.bean.YueBiEntity;
 
@@ -131,5 +132,9 @@ public interface ApiService {
     //26 http://www.52zhimali.com/index.php?m=mobile&c=content&a=news_view_charge
     @GET("/index.php")
     Observable<HttpResult<String>> doCharge(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+
+    //27 http://www.52zhimali.com/index.php?m=mobile&c=poster&a=poster_list
+    @GET("/index.php")
+    Observable<HttpResult<ArrayList<PosterEntity>>> getPosterList(@QueryMap Map<String, String> params);
 
 }

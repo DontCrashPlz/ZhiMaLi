@@ -29,8 +29,8 @@ public class VedioListAdapter extends BaseQuickAdapter<NewsListEntity,VedioListA
         Glide.with(mContext)
                 .load(item.getPics().get(0))
                 .asBitmap()
-                .placeholder(R.mipmap.zhanwei)
-                .error(R.mipmap.zhanwei)
+                .placeholder(R.drawable.zhanwei)
+                .error(R.drawable.zhanwei)
                 .into(helper.mVedioListPic);
         helper.mVedioListTime.setText(item.getFormat_date());
         helper.mVedioListRead.setText(item.getView_num());

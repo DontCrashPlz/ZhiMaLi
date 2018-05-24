@@ -34,27 +34,27 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@mipmap/zhanwei"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
+                android:src="@drawable/zhanwei"
                 android:background="@color/background_page"/>
             <ImageView
                 android:id="@+id/news_search_type1_pic2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@mipmap/zhanwei"
+                android:scaleType="fitXY"
+                android:src="@drawable/zhanwei"
                 android:background="@color/background_page"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:scaleType="centerCrop"/>
+                android:layout_marginRight="8dp"/>
             <ImageView
                 android:id="@+id/news_search_type1_pic3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@mipmap/zhanwei"
-                android:background="@color/background_page"
-                android:scaleType="centerCrop"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/zhanwei"
+                android:background="@color/background_page"/>
         </LinearLayout>
 
         <TextView
@@ -110,10 +110,10 @@
             android:id="@+id/news_search_type2_pic"
             android:layout_width="110dp"
             android:layout_height="75dp"
-            android:src="@mipmap/zhanwei"
+            android:scaleType="fitXY"
+            android:src="@drawable/zhanwei"
             android:background="@color/background_page"
             android:layout_alignParentRight="true"
-            android:scaleType="centerCrop"
             android:layout_marginLeft="20dp"/>
 
         <TextView

@@ -10,12 +10,10 @@ import android.widget.ImageView;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.NewsDetailEntity;
-import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -142,12 +140,6 @@ public class VedioDetailActivity extends BaseActivity {
     @Override
     public void initProgress() {
         mProgressDialog= new ProgressDialog(getRealContext());
-        mProgressDialog.setLabel("正在加载视频..");
-        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                clearNetWork();
-            }
-        });
+        mProgressDialog.setLabel("正在加载页面..");
     }
 }

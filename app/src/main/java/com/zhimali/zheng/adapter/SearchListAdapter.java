@@ -46,24 +46,24 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
             Glide.with(mContext)
                     .load(item.getPics().get(0))
                     .asBitmap()
-                    .placeholder(R.mipmap.zhanwei)
-                    .error(R.mipmap.zhanwei)
+                    .placeholder(R.drawable.zhanwei)
+                    .error(R.drawable.zhanwei)
                     .into(helper.mType1_pic1);
         }
         if (item.getPics().size()> 1){
             Glide.with(mContext)
                     .load(item.getPics().get(1))
                     .asBitmap()
-                    .placeholder(R.mipmap.zhanwei)
-                    .error(R.mipmap.zhanwei)
+                    .placeholder(R.drawable.zhanwei)
+                    .error(R.drawable.zhanwei)
                     .into(helper.mType1_pic2);
         }
         if (item.getPics().size()> 2){
             Glide.with(mContext)
                     .load(item.getPics().get(2))
                     .asBitmap()
-                    .placeholder(R.mipmap.zhanwei)
-                    .error(R.mipmap.zhanwei)
+                    .placeholder(R.drawable.zhanwei)
+                    .error(R.drawable.zhanwei)
                     .into(helper.mType1_pic3);
         }
         helper.mType1_time.setText(item.getFormat_date());
@@ -84,8 +84,8 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
         Glide.with(mContext)
                 .load(item.getPics().get(0))
                 .asBitmap()
-                .placeholder(R.mipmap.zhanwei)
-                .error(R.mipmap.zhanwei)
+                .placeholder(R.drawable.zhanwei)
+                .error(R.drawable.zhanwei)
                 .into(helper.mType2_pic);
         helper.mType2_time.setText(item.getFormat_date());
         helper.mType2_read.setText(item.getView_num());

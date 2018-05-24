@@ -1,6 +1,5 @@
 package com.zhimali.zheng.module_mine;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,14 +10,10 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseFragment;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.YueBiListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
-import com.zhimali.zheng.bean.NewsListEntity;
-import com.zhimali.zheng.bean.TiXianEntity;
 import com.zhimali.zheng.bean.YueBiEntity;
-import com.zhimali.zheng.bean.YueBiResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 

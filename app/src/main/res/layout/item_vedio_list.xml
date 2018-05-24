@@ -31,9 +31,9 @@
             android:id="@+id/vedio_list_pic"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:src="@mipmap/zhanwei"
-            android:background="@color/background_page"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitXY"
+            android:src="@drawable/zhanwei"
+            android:background="@color/background_page" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

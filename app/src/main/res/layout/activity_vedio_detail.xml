@@ -16,6 +16,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <cn.jzvd.JZVideoPlayerStandard
+                android:id="@+id/jzvideoplayer"
+                android:layout_width="match_parent"
+                android:layout_height="195dp" />
+
             <TextView
                 android:id="@+id/vedio_detail_title"
                 android:layout_width="match_parent"

@@ -16,13 +16,9 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseActivity;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
-import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
-import com.zhimali.zheng.adapter.SearchListAdapter;
 import com.zhimali.zheng.adapter.VedioListAdapter;
 import com.zhimali.zheng.bean.NewsListEntity;
-import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.dao.DaoMaster;
 import com.zhimali.zheng.dao.DaoSession;
 import com.zhimali.zheng.dao.HistoryData;

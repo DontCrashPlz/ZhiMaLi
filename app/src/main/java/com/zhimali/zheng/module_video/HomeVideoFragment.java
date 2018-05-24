@@ -12,11 +12,9 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zheng.zchlibrary.apps.BaseFragment;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.VedioListAdapter;
 import com.zhimali.zheng.bean.NewsListEntity;
-import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 

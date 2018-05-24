@@ -1,44 +1,20 @@
 package com.zhimali.zheng.http;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.zheng.zchlibrary.https.NovateCookieManger;
-import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
-import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
-import com.zhimali.zheng.bean.AboutUsEntity;
-import com.zhimali.zheng.bean.BindMobileEntity;
-import com.zhimali.zheng.bean.BusinessEntity;
 import com.zhimali.zheng.bean.CategoryEntity;
-import com.zhimali.zheng.bean.CategoryResponseEntity;
-import com.zhimali.zheng.bean.ChangePasswordEntity;
 import com.zhimali.zheng.bean.FansEntity;
-import com.zhimali.zheng.bean.FansResponseEntity;
-import com.zhimali.zheng.bean.FeedBackEntity;
-import com.zhimali.zheng.bean.FindPasswordEntity;
 import com.zhimali.zheng.bean.HelpDetailEntity;
 import com.zhimali.zheng.bean.HelpEntity;
 import com.zhimali.zheng.bean.HttpResult;
-import com.zhimali.zheng.bean.InviteCodeEntity;
-import com.zhimali.zheng.bean.LoginEntity;
-import com.zhimali.zheng.bean.NameSetEntity;
 import com.zhimali.zheng.bean.NewsDetailEntity;
-import com.zhimali.zheng.bean.NewsDetailResponseEntity;
 import com.zhimali.zheng.bean.NewsListEntity;
-import com.zhimali.zheng.bean.NewsListResponseEntity;
 import com.zhimali.zheng.bean.NoticeDetailEntity;
 import com.zhimali.zheng.bean.NoticeEntity;
-import com.zhimali.zheng.bean.RegisterEntity;
-import com.zhimali.zheng.bean.SignInEntity;
-import com.zhimali.zheng.bean.TiXianEntity;
+import com.zhimali.zheng.bean.PosterEntity;
 import com.zhimali.zheng.bean.UserEntity;
-import com.zhimali.zheng.bean.UserResponseEntity;
-import com.zhimali.zheng.bean.WechatLoginEntity;
-import com.zhimali.zheng.bean.YanZhengMaEntity;
 import com.zhimali.zheng.bean.YueBiEntity;
-import com.zhimali.zheng.bean.YueBiResponseEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,9 +24,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -140,6 +113,14 @@ public class Network {
         Map<String, String> baseParamMap= new HashMap<>();
         baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
         baseParamMap.put(NetParams.PARAM2, NetParams.VALUE6);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getPosterParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE7);
         baseParamMap.put(NetParams.PARAM_TAG, networkTag);
         return baseParamMap;
     }
@@ -426,6 +407,9 @@ public class Network {
         if (MyApplication.sh!= null && MyApplication.sh.length()> 0){
             params.put("sh", MyApplication.sh);
         }
+        if (MyApplication.uuid!= null && MyApplication.uuid.length()> 0){
+            params.put("uuid", MyApplication.uuid);
+        }
 
 //        params.put("uuid", "");
         return apiService.getNewsDetail(token, params);
@@ -512,6 +496,17 @@ public class Network {
             params.put("uuid", MyApplication.uuid);
         }
         return apiService.doCharge(token, params);
+    }
+
+    /**
+     * 27 获取广告列表
+     * @param posid 广告位id
+     */
+    public Observable<HttpResult<ArrayList<PosterEntity>>> getPosterList(String posid){
+        Map<String, String> params=
+                getPosterParamMap(NetParams.TAG_POSTER_LIST);
+        params.put("posid", posid);
+        return apiService.getPosterList(params);
     }
 
 }
