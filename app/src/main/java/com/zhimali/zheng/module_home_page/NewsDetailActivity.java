@@ -207,7 +207,6 @@ public class NewsDetailActivity extends BaseActivity {
                         showShortToast(throwable.toString());
                     }
                 }));
-
     }
 
     @Override

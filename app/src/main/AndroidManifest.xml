@@ -85,7 +85,8 @@
             android:screenOrientation="portrait" />
 
         <activity android:name=".module_video.VedioDetailActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".module_home_page.NewsDetailActivity"
             android:screenOrientation="portrait" />
