@@ -1,5 +1,6 @@
 package com.zhimali.zheng.http;
 
+import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.CategoryEntity;
 import com.zhimali.zheng.bean.FansEntity;
 import com.zhimali.zheng.bean.HelpDetailEntity;
@@ -137,4 +138,11 @@ public interface ApiService {
     @GET("/index.php")
     Observable<HttpResult<ArrayList<PosterEntity>>> getPosterList(@QueryMap Map<String, String> params);
 
+    //28 http://www.52zhimali.com/index.php?m=mobile&c=device&a=init
+    @GET("/index.php")
+    Observable<HttpResult<String>> initApp(@Header("Xversion")String xVersion, @QueryMap Map<String, String> params);
+
+    //29 http://www.52zhimali.com/index.php?m=mobile&c=sys&a=config
+    @GET("/index.php")
+    Observable<HttpResult<AppBaseEntity>> getAppBaseInfo(@QueryMap Map<String, String> params);
 }

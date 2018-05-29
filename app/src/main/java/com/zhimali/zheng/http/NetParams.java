@@ -14,6 +14,8 @@ public class NetParams {
     public static final String VALUE5= "notice";
     public static final String VALUE6= "help";
     public static final String VALUE7= "poster";
+    public static final String VALUE_DEVICE= "device";
+    public static final String VALUE_SYS= "sys";
 
     public static final String PARAM_TAG= "a";
     public static final String TAG_YANZHENGMA= "verify";//1
@@ -42,5 +44,7 @@ public class NetParams {
     public static final String TAG_HELP_LIST= "help_list";//24
     public static final String TAG_HELP_DETAIL= "help_detail";//25
     public static final String TAG_DO_CHARGE= "news_view_charge";//26
-    public static final String TAG_POSTER_LIST= "poster_list";//26
+    public static final String TAG_POSTER_LIST= "poster_list";//27
+    public static final String TAG_INITAPP= "init";//28
+    public static final String TAG_GET_APPBASEINFO= "config";//29
 }

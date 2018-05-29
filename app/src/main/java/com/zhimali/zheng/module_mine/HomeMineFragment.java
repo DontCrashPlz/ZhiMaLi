@@ -20,8 +20,13 @@ import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.UserEntity;
+import com.zhimali.zheng.http.Network;
+import com.zhimali.zheng.http.ResponseTransformer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -103,7 +108,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
 //                break;
 //            }
             case R.id.mine_tv_username:{
-                if (MyApplication.getInstance().isHadUser()){//如果已登录，提示一下
+                if (isUserValid()){//如果已登录，提示一下
                     showShortToast("您已登录");
                 }else {//如果没有登录，跳转到登录界面
                     startActivity(new Intent(getRealContext(), LoginActivity.class));
@@ -115,8 +120,8 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_fans:{
-                if (MyApplication.getInstance().isHadUser()){
-                    if (MyApplication.appUser.getFans()< 1){
+                if (isUserValid()){
+                    if (mUserEntity.getFans()< 1){
                         showShortToast("您还没有粉丝");
                     }else {
                         startActivity(new Intent(getRealContext(), FansActivity.class));
@@ -127,7 +132,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_yuebi:{
-                if (MyApplication.getInstance().isHadUser()){
+                if (isUserValid()){
                     startActivity(new Intent(getRealContext(), YueBiActivity.class));
                 }else {//如果没有登录，跳转到登录界面
                     showShortToast("请先登录");
@@ -135,10 +140,32 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_btn_qiandao:{
-                if (MyApplication.getInstance().isHadUser()){
-                    if (MyApplication.appUser.getSigned()== 0){
-                        showShortToast("签到");
-                    }else if (MyApplication.appUser.getSigned()== 1){
+                if (isUserValid()){
+                    if (mUserEntity.getSigned()== 0){
+                        addNetWork(Network.getInstance().doSignIn(MyApplication.appToken)
+                                .subscribeOn(Schedulers.io())
+                                .unsubscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .compose(ResponseTransformer.<String>handleResult())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        showShortToast("签到成功");
+                                        mUserEntity.setSigned(1);
+                                        mQianDaoBtn.setText("已签到");
+                                        mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                                                null,
+                                                getResources().getDrawable(R.mipmap.ad),
+                                                null,
+                                                null);
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        showShortToast(throwable.toString());
+                                    }
+                                }));
+                    }else if (mUserEntity.getSigned()== 1){
                         showShortToast("您已签到");
                     }
                 }else {//如果没有登录，跳转到登录界面
@@ -176,11 +203,6 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
 
-        mUserHeadCiv.setImageResource(R.mipmap.yonghu);
-        mUserNameTv.setText("立即登录");
-        mFansBtn.setText("粉丝");
-        mYueBiBtn.setText("阅币");
-
         if (MyApplication.getInstance().loadLocalToken()){
             addNetWork(MyApplication.getInstance().refreshUser(new IAsyncLoadListener<UserEntity>() {
                 @Override
@@ -196,15 +218,17 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                     mFansBtn.setText("粉丝" + mUserEntity.getFans());
                     mYueBiBtn.setText("阅币" + mUserEntity.getCoin());
                     if (mUserEntity.getSigned()== 0){
+                        mQianDaoBtn.setText("签到");
                         mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
                                 null,
                                 getResources().getDrawable(R.mipmap.qd),
                                 null,
                                 null);
                     }else if (mUserEntity.getSigned()== 1){
+                        mQianDaoBtn.setText("已签到");
                         mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
                                 null,
-                                getResources().getDrawable(R.mipmap.qdd),
+                                getResources().getDrawable(R.mipmap.ad),
                                 null,
                                 null);
                     }
@@ -215,7 +239,22 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                     showShortToast(msg);
                 }
             }));
+        }else {
+            mUserHeadCiv.setImageResource(R.mipmap.yonghu);
+            mUserNameTv.setText("立即登录");
+            mFansBtn.setText("粉丝");
+            mYueBiBtn.setText("阅币");
         }
+    }
+
+    /**
+     * 用户是否有效
+     * @return
+     */
+    private boolean isUserValid(){
+        if (mUserEntity!= null && mUserEntity.getUserid().length()> 0)
+            return true;
+        return false;
     }
 
     @Override

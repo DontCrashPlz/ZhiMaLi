@@ -1,8 +1,10 @@
 package com.zhimali.zheng.http;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.CategoryEntity;
 import com.zhimali.zheng.bean.FansEntity;
 import com.zhimali.zheng.bean.HelpDetailEntity;
@@ -121,6 +123,22 @@ public class Network {
         Map<String, String> baseParamMap= new HashMap<>();
         baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
         baseParamMap.put(NetParams.PARAM2, NetParams.VALUE7);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getDeviceParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE_DEVICE);
+        baseParamMap.put(NetParams.PARAM_TAG, networkTag);
+        return baseParamMap;
+    }
+
+    private Map<String, String> getSysParamMap(String networkTag){
+        Map<String, String> baseParamMap= new HashMap<>();
+        baseParamMap.put(NetParams.PARAM1, NetParams.VALUE1);
+        baseParamMap.put(NetParams.PARAM2, NetParams.VALUE_SYS);
         baseParamMap.put(NetParams.PARAM_TAG, networkTag);
         return baseParamMap;
     }
@@ -507,6 +525,42 @@ public class Network {
                 getPosterParamMap(NetParams.TAG_POSTER_LIST);
         params.put("posid", posid);
         return apiService.getPosterList(params);
+    }
+
+    /**
+     * 28 设备信息上报
+     * @param xVersion
+     * @param uuid
+     * @param brand
+     * @param network
+     * @param gps
+     * @param screen
+     * @return
+     */
+    public Observable<HttpResult<String>> initApp(
+            String xVersion,
+            String uuid,
+            @Nullable String brand,
+            @Nullable String network,
+            @Nullable String gps,
+            @Nullable String screen){
+        Map<String, String> params=
+                getDeviceParamMap(NetParams.TAG_INITAPP);
+        params.put("uuid", uuid);
+        if (brand!= null) params.put("brand", brand);
+        if (network!= null) params.put("network", network);
+        if (gps!= null) params.put("gps", gps);
+        if (screen!= null) params.put("screen", screen);
+        return apiService.initApp(xVersion, params);
+    }
+
+    /**
+     * 29 获取APP基础信息
+     */
+    public Observable<HttpResult<AppBaseEntity>> getAppInfo(){
+        Map<String, String> params=
+                getSysParamMap(NetParams.TAG_GET_APPBASEINFO);
+        return apiService.getAppBaseInfo(params);
     }
 
 }
