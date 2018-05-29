@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zheng.zchlibrary.apps.BaseFragment;
+import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
@@ -49,6 +50,8 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout mBusinessRly;
     private RelativeLayout mTiXianRly;
     private RelativeLayout mInviteCodeRly;
+
+    private UserEntity mUserEntity;
 
     @Nullable
     @Override
@@ -173,34 +176,45 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
 
-        if (MyApplication.getInstance().isHadUser()){
-            Glide.with(this)
-                    .load(MyApplication.appUser.getAvatar())
-                    .asBitmap()
-                    .placeholder(R.mipmap.yonghu)
-                    .error(R.mipmap.yonghu)
-                    .into(mUserHeadCiv);
-            mUserNameTv.setText(MyApplication.appUser.getNickname());
-            mFansBtn.setText("粉丝" + MyApplication.appUser.getFans());
-            mYueBiBtn.setText("阅币" + MyApplication.appUser.getCoin());
-            if (MyApplication.appUser.getSigned()== 0){
-                mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
-                        null,
-                        getResources().getDrawable(R.mipmap.qd),
-                        null,
-                        null);
-            }else if (MyApplication.appUser.getSigned()== 1){
-                mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
-                        null,
-                        getResources().getDrawable(R.mipmap.qdd),
-                        null,
-                        null);
-            }
-        }else {
-            mUserHeadCiv.setImageResource(R.mipmap.yonghu);
-            mUserNameTv.setText("立即登录");
-            mFansBtn.setText("粉丝");
-            mYueBiBtn.setText("阅币");
+        mUserHeadCiv.setImageResource(R.mipmap.yonghu);
+        mUserNameTv.setText("立即登录");
+        mFansBtn.setText("粉丝");
+        mYueBiBtn.setText("阅币");
+
+        if (MyApplication.getInstance().loadLocalToken()){
+            addNetWork(MyApplication.getInstance().refreshUser(new IAsyncLoadListener<UserEntity>() {
+                @Override
+                public void onSuccess(UserEntity userEntity) {
+                    mUserEntity= userEntity;
+                    Glide.with(getRealContext())
+                            .load(mUserEntity.getAvatar())
+                            .asBitmap()
+                            .placeholder(R.mipmap.yonghu)
+                            .error(R.mipmap.yonghu)
+                            .into(mUserHeadCiv);
+                    mUserNameTv.setText(mUserEntity.getNickname());
+                    mFansBtn.setText("粉丝" + mUserEntity.getFans());
+                    mYueBiBtn.setText("阅币" + mUserEntity.getCoin());
+                    if (mUserEntity.getSigned()== 0){
+                        mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                                null,
+                                getResources().getDrawable(R.mipmap.qd),
+                                null,
+                                null);
+                    }else if (mUserEntity.getSigned()== 1){
+                        mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                                null,
+                                getResources().getDrawable(R.mipmap.qdd),
+                                null,
+                                null);
+                    }
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    showShortToast(msg);
+                }
+            }));
         }
     }
 

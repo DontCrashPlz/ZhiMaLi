@@ -71,6 +71,7 @@ public class YueBiActivity extends BaseActivity implements View.OnClickListener 
                 return 3;
             }
         });
+        mViewPager.setOffscreenPageLimit(2);
 
         mTabLayout.setTabData(mTabEntities);
         mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
