@@ -1,6 +1,7 @@
 package com.zhimali.zheng.module_video;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.HttpResult;
 import com.zhimali.zheng.bean.NewsDetailEntity;
 import com.zhimali.zheng.bean.PosterEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
@@ -50,6 +52,8 @@ public class VedioDetailActivity extends BaseActivity {
     private String id;
 
     private int viewId;
+    private String mShareTitle;
+    private String mShareUrl;
 
     private String mVideoUrl;//视频url
     private String mImageUrl;//视频展示图url
@@ -86,7 +90,18 @@ public class VedioDetailActivity extends BaseActivity {
         mShareIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showShortToast("分享");
+                if (mShareTitle== null
+                        || mShareTitle.trim().length()< 1
+                        || mShareUrl== null
+                        || mShareUrl.trim().length()< 1){
+                    showShortToast("分享内容获取失败");
+                    return;
+                }
+                Intent intent= new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT,
+                        "芝麻粒分享 【" + mShareTitle + "】 " + mShareUrl);
+                intent.setType("text/plain");
+                startActivity(intent);
             }
         });
 
@@ -140,7 +155,7 @@ public class VedioDetailActivity extends BaseActivity {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            showShortToast(throwable.toString());
+                            showShortToast(HttpUtils.parseThrowableMsg(throwable));
                             dismissProgressDialog();
                         }
                     }, new Action() {
@@ -199,7 +214,7 @@ public class VedioDetailActivity extends BaseActivity {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            showShortToast(throwable.toString());
+                            showShortToast(HttpUtils.parseThrowableMsg(throwable));
                             dismissProgressDialog();
                         }
                     }, new Action() {
@@ -230,7 +245,7 @@ public class VedioDetailActivity extends BaseActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        showShortToast(throwable.toString());
+                        LogUtil.d("广告列表加载失败: ", throwable.toString());
                     }
                 }));
     }

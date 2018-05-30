@@ -6,6 +6,7 @@ package com.zhimali.zheng.bean;
 
 public class VersionEntity {
     private AndroidVersionEntity android;
+    private AndroidVersionEntity ios;
 
     public AndroidVersionEntity getAndroid() {
         return android;
@@ -15,10 +16,19 @@ public class VersionEntity {
         this.android = android;
     }
 
+    public AndroidVersionEntity getIos() {
+        return ios;
+    }
+
+    public void setIos(AndroidVersionEntity ios) {
+        this.ios = ios;
+    }
+
     @Override
     public String toString() {
         return "VersionEntity{" +
                 "android=" + android +
+                ", ios=" + ios +
                 '}';
     }
 }

@@ -11,6 +11,7 @@ import com.zheng.zchlibrary.utils.ScreenUtils;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.UserEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -147,7 +148,7 @@ public class MyApplication extends BaseApplication {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtil.d("刷新用户信息出现错误", throwable.toString());
-                        if (listener!= null) listener.onFailure(throwable.toString());
+                        if (listener!= null) listener.onFailure(HttpUtils.parseThrowableMsg(throwable));
                     }
                 });
     }

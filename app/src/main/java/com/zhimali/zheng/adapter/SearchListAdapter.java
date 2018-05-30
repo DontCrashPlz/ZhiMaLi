@@ -1,5 +1,6 @@
 package com.zhimali.zheng.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -10,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.NewsListEntity;
+import com.zhimali.zheng.module_home_page.NewsDetailActivity;
 
 /**
  * Created by Zheng on 2018/4/26.
@@ -37,7 +39,7 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
      * @param helper
      * @param item
      */
-    private void dealType1(SearchListHolder helper, NewsListEntity item){
+    private void dealType1(SearchListHolder helper, final NewsListEntity item){
         helper.mType1.setVisibility(View.VISIBLE);
         helper.mType2.setVisibility(View.GONE);
         helper.mType3.setVisibility(View.GONE);
@@ -69,6 +71,15 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
         helper.mType1_time.setText(item.getFormat_date());
         helper.mType1_read.setText(item.getView_num());
         helper.mType1_yb.setText(item.getCoin());
+
+        helper.mType1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(mContext, NewsDetailActivity.class);
+                intent.putExtra("id", item.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -76,7 +87,7 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
      * @param helper
      * @param item
      */
-    private void dealType2(SearchListHolder helper, NewsListEntity item){
+    private void dealType2(SearchListHolder helper, final NewsListEntity item){
         helper.mType1.setVisibility(View.GONE);
         helper.mType2.setVisibility(View.VISIBLE);
         helper.mType3.setVisibility(View.GONE);
@@ -90,6 +101,15 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
         helper.mType2_time.setText(item.getFormat_date());
         helper.mType2_read.setText(item.getView_num());
         helper.mType2_yb.setText(item.getCoin());
+
+        helper.mType2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(mContext, NewsDetailActivity.class);
+                intent.putExtra("id", item.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -97,7 +117,7 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
      * @param helper
      * @param item
      */
-    private void dealType3(SearchListHolder helper, NewsListEntity item){
+    private void dealType3(SearchListHolder helper, final NewsListEntity item){
         helper.mType1.setVisibility(View.GONE);
         helper.mType2.setVisibility(View.GONE);
         helper.mType3.setVisibility(View.VISIBLE);
@@ -105,6 +125,15 @@ public class SearchListAdapter extends BaseQuickAdapter<NewsListEntity, SearchLi
         helper.mType3_time.setText(item.getFormat_date());
         helper.mType3_read.setText(item.getView_num());
         helper.mType3_yb.setText(item.getCoin());
+
+        helper.mType3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(mContext, NewsDetailActivity.class);
+                intent.putExtra("id", item.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     class SearchListHolder extends BaseViewHolder {

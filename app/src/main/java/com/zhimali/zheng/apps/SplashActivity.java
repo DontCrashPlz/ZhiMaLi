@@ -90,10 +90,10 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public ObservableSource<Object> apply(Long aLong) throws Exception {
                         return Observable.zip(
-                                initObservable,
-                                getAppInfoObservable, new BiFunction<String, AppBaseEntity, Object>() {
+                                getAppInfoObservable,
+                                initObservable, new BiFunction<AppBaseEntity, String, Object>() {
                                     @Override
-                                    public Object apply(String s, AppBaseEntity appBaseEntity) throws Exception {
+                                    public Object apply(AppBaseEntity appBaseEntity, String s) throws Exception {
                                         MyApplication.appBaseEntity= appBaseEntity;
                                         return "";
                                     }
@@ -113,7 +113,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtil.e("初始化请求失败：", throwable.toString());
-                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
+//                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                         startActivity(new Intent(getRealContext(), HomeActivity.class));
                         finish();
                     }

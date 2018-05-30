@@ -105,7 +105,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             case R.id.setting_btn_logout:{
                 if (MyApplication.getInstance().isHadUser()){//如果已登录，退出登录
                     SharedPrefUtils.remove(this, MyApplication.TOKEN_TAG);
-                    if (MyApplication.getInstance().isHadToken()){
+                    if (MyApplication.getInstance().loadLocalToken()){
                         showShortToast("退出登录失败");
                     }else {
                         showShortToast("退出登录成功");

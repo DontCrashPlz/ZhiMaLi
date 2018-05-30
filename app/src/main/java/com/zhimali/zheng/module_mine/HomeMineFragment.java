@@ -20,6 +20,7 @@ import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.UserEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -162,7 +163,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                                 }, new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
-                                        showShortToast(throwable.toString());
+                                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                                     }
                                 }));
                     }else if (mUserEntity.getSigned()== 1){
@@ -244,6 +245,13 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
             mUserNameTv.setText("立即登录");
             mFansBtn.setText("粉丝");
             mYueBiBtn.setText("阅币");
+            mQianDaoBtn.setText("签到");
+            mQianDaoBtn.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    getResources().getDrawable(R.mipmap.qd),
+                    null,
+                    null);
+            mUserEntity= null;
         }
     }
 

@@ -14,6 +14,7 @@ import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.FansListAdapter;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.FansEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -100,7 +101,7 @@ public class FansActivity extends BaseActivity implements
                             mAdapter.loadMoreFail();
                             mAdapter.loadMoreEnd();
                             if (mCurrentPage== 1){
-                                mAdapter.setEmptyView(R.layout.layout_search_empty);
+                                mAdapter.setEmptyView(R.layout.layout_recycler_empty);
                             }
                         }
                     }
@@ -109,7 +110,7 @@ public class FansActivity extends BaseActivity implements
                     public void accept(Throwable throwable) throws Exception {
                         dismissProgressBar();
                         mAdapter.loadMoreFail();
-                        showShortToast(throwable.toString());
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                     }
                 }, new Action() {
                     @Override

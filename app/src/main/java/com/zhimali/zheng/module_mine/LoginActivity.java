@@ -16,6 +16,7 @@ import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -117,14 +118,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 dismissProgressDialog();
                                 LogUtil.d("register data", str);
                                 MyApplication.getInstance().setToken(str);
-                                MyApplication.getInstance().loadUser();
+                                MyApplication.getInstance().refreshUser(null);
                                 finish();
                             }
                         }, new Consumer<Throwable>() {
                             @Override
                             public void accept(Throwable throwable) throws Exception {
                                 dismissProgressDialog();
-                                showShortToast(throwable.toString());
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
                             }
                         }, new Action() {
                             @Override

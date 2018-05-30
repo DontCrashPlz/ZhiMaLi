@@ -104,7 +104,7 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
                                     mAdapter.loadMoreFail();
                                     mAdapter.loadMoreEnd();
                                     if (mCurrentPage== 1){
-                                        mAdapter.setEmptyView(R.layout.layout_search_empty);
+                                        mAdapter.setEmptyView(R.layout.layout_recycler_empty);
                                     }
                                 }
                             }

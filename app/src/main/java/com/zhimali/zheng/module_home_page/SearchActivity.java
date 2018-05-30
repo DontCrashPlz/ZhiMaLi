@@ -25,6 +25,7 @@ import com.zhimali.zheng.dao.DaoMaster;
 import com.zhimali.zheng.dao.DaoSession;
 import com.zhimali.zheng.dao.HistoryData;
 import com.zhimali.zheng.db.GreenDaoHelper;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
@@ -54,6 +55,7 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
     private EditText mKeywordEt;
     private ImageButton mCleanHistoryIbtn;
     private TagFlowLayout mTagflowlayout;
+    private TagAdapter<HistoryData> tagAdapter;
     private RecyclerView mRecycler;
     private SearchListAdapter mAdapter;
 
@@ -148,41 +150,11 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
             @Override
             public void onClick(View v) {
                 mHelper.clearHistoryData();
+                refreshTagFlowLayout();
             }
         });
         mTagflowlayout= findViewById(R.id.search_tagflow);
-        final List<HistoryData> historyDatas= mHelper.loadAllHistoryData();
-        mTagflowlayout.setAdapter(new TagAdapter<HistoryData>(historyDatas) {
-            @Override
-            public View getView(FlowLayout parent, int position, HistoryData historyData) {
-                TextView textView= (TextView) LayoutInflater
-                        .from(getRealContext())
-                        .inflate(R.layout.item_flow_tag, parent, false);
-                textView.setText(historyData.getData());
-                return textView;
-            }
-        });
-        mTagflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-            @Override
-            public boolean onTagClick(View view, int position, FlowLayout parent) {
-                TextView textView= view.findViewById(R.id.commonItemTitle);
-                String str= textView.getText().toString().trim();
-                if (str== null || str.length()<1){
-                    showShortToast("标签出错");
-                    return false;
-                }
-                mCurrentPage= 1;
-                mKeyword= str;
-                mKeywordEt.setText(mKeyword);
-
-                mHelper.addHistoryData(mKeyword);
-                requestNetData(mCurrentPage, mKeyword);
-
-                mHistoryPanel.setVisibility(View.GONE);
-                mRecycler.setVisibility(View.VISIBLE);
-                return true;
-            }
-        });
+        refreshTagFlowLayout();
         mRecycler= findViewById(R.id.search_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
         mAdapter= new SearchListAdapter(R.layout.item_news_search_list);
@@ -221,7 +193,7 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
                     public void accept(Throwable throwable) throws Exception {
                         dismissProgressBar();
                         mAdapter.loadMoreFail();
-                        showShortToast(throwable.toString());
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                     }
                 }, new Action() {
                     @Override
@@ -241,4 +213,41 @@ public class SearchActivity extends BaseActivity implements BaseQuickAdapter.Req
         mCurrentPage+= 1;
         requestNetData(mCurrentPage, mKeyword);
     }
+
+    private void refreshTagFlowLayout(){
+        final List<HistoryData> historyDatas= mHelper.loadAllHistoryData();
+        tagAdapter= new TagAdapter<HistoryData>(historyDatas) {
+            @Override
+            public View getView(FlowLayout parent, int position, HistoryData historyData) {
+                TextView textView= (TextView) LayoutInflater
+                        .from(getRealContext())
+                        .inflate(R.layout.item_flow_tag, parent, false);
+                textView.setText(historyData.getData());
+                return textView;
+            }
+        };
+        mTagflowlayout.setAdapter(tagAdapter);
+        mTagflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+            @Override
+            public boolean onTagClick(View view, int position, FlowLayout parent) {
+                TextView textView= view.findViewById(R.id.commonItemTitle);
+                String str= textView.getText().toString().trim();
+                if (str== null || str.length()<1){
+                    showShortToast("标签出错");
+                    return false;
+                }
+                mCurrentPage= 1;
+                mKeyword= str;
+                mKeywordEt.setText(mKeyword);
+
+                mHelper.addHistoryData(mKeyword);
+                requestNetData(mCurrentPage, mKeyword);
+
+                mHistoryPanel.setVisibility(View.GONE);
+                mRecycler.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+    }
+
 }

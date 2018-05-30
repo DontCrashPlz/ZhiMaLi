@@ -14,6 +14,7 @@ import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.HelpDetailEntity;
 import com.zhimali.zheng.bean.NoticeDetailEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -102,7 +103,7 @@ public class HelpDetailActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         dismissProgressDialog();
-                        showShortToast(throwable.toString());
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                     }
                 }, new Action() {
                     @Override

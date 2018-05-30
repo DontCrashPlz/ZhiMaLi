@@ -16,6 +16,7 @@ import com.zhimali.zheng.adapter.HelpListAdapter;
 import com.zhimali.zheng.adapter.NoticeListAdapter;
 import com.zhimali.zheng.bean.HelpEntity;
 import com.zhimali.zheng.bean.NoticeEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -82,14 +83,14 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
                         if (helpEntities.size()> 0){
                             mAdapter.addData(helpEntities);
                         }else {
-                            mAdapter.setEmptyView(R.layout.layout_search_empty);
+                            mAdapter.setEmptyView(R.layout.layout_recycler_empty);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         dismissProgressDialog();
-                        showShortToast(throwable.toString());
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                     }
                 }, new Action() {
                     @Override

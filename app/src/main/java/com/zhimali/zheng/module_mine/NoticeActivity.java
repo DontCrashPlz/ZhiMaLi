@@ -14,6 +14,7 @@ import com.zheng.zchlibrary.widgets.progressDialog.ProgressDialog;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.NoticeListAdapter;
 import com.zhimali.zheng.bean.NoticeEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
@@ -80,14 +81,14 @@ public class NoticeActivity extends BaseActivity implements View.OnClickListener
                         if (noticeEntities.size()> 0){
                             mAdapter.addData(noticeEntities);
                         }else {
-                            mAdapter.setEmptyView(R.layout.jz_layout_clarity_item);
+                            mAdapter.setEmptyView(R.layout.layout_recycler_empty);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         dismissProgressDialog();
-                        showShortToast(throwable.toString());
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                     }
                 }, new Action() {
                     @Override
