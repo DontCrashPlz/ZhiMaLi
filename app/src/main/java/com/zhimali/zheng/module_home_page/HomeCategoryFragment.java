@@ -15,6 +15,7 @@ import com.zheng.zchlibrary.widgets.LazyLoadFragment;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.adapter.NewsListAdapter;
 import com.zhimali.zheng.bean.NewsListEntity;
+import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 import com.zhimali.zheng.widgets.MyNewsListItemDecoration;
@@ -112,7 +113,7 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
                             public void accept(Throwable throwable) throws Exception {
                                 dismissProgressBar();
                                 mAdapter.loadMoreFail();
-                                showShortToast(throwable.toString());
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
                             }
                         }, new Action() {
                             @Override

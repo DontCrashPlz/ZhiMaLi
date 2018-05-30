@@ -9,6 +9,7 @@ import com.zheng.zchlibrary.interfaces.IAsyncLoadListener;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.ScreenUtils;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
+import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.UserEntity;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
@@ -38,6 +39,8 @@ public class MyApplication extends BaseApplication {
     public static String sh;
     //uuid
     public static String uuid;
+
+    public static AppBaseEntity appBaseEntity;
 
     @Override
     public void onCreate() {
