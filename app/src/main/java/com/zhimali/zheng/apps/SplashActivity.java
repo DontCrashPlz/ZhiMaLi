@@ -86,14 +86,14 @@ public class SplashActivity extends BaseActivity {
                         .compose(ResponseTransformer.<AppBaseEntity>handleResult());
 
         Observable.timer(2, TimeUnit.SECONDS)
-                .flatMap(new Function<Long, ObservableSource<Object>>() {
+                .flatMap(new Function<Long, ObservableSource<String>>() {
                     @Override
-                    public ObservableSource<Object> apply(Long aLong) throws Exception {
+                    public ObservableSource<String> apply(Long aLong) throws Exception {
                         return Observable.zip(
                                 getAppInfoObservable,
-                                initObservable, new BiFunction<AppBaseEntity, String, Object>() {
+                                initObservable, new BiFunction<AppBaseEntity, String, String>() {
                                     @Override
-                                    public Object apply(AppBaseEntity appBaseEntity, String s) throws Exception {
+                                    public String apply(AppBaseEntity appBaseEntity, String s) throws Exception {
                                         MyApplication.appBaseEntity= appBaseEntity;
                                         return "";
                                     }
@@ -105,7 +105,7 @@ public class SplashActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(@Nullable Object o) throws Exception {
                         startActivity(new Intent(getRealContext(), HomeActivity.class));
                         finish();
                     }
@@ -113,7 +113,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtil.e("初始化请求失败：", throwable.toString());
-//                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                        showShortToast(HttpUtils.parseThrowableMsg(throwable));
                         startActivity(new Intent(getRealContext(), HomeActivity.class));
                         finish();
                     }
@@ -161,7 +161,8 @@ public class SplashActivity extends BaseActivity {
         }else {
             LogUtil.d("定位信息获取方式", provider);
             location= locationManager.getLastKnownLocation(provider);
-            return "" + location.getLongitude() + "," + location.getLatitude();
+//            return "" + location.getLongitude() + "," + location.getLatitude();
+            return "";
         }
     }
 

@@ -17,9 +17,11 @@ import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -88,7 +90,22 @@ public class FindPasswordActivity extends BaseActivity implements View.OnClickLi
                 if (mobileNum== null || mobileNum.length()!= 11){
                     showShortToast("请输入11位手机号码");
                 }else {
-                    Network.getInstance().getYanZhengMa(this, mobileNum);
+                    addNetWork(Network.getInstance().getYanZhengMa(this, mobileNum)
+                            .subscribeOn(Schedulers.io())
+                            .unsubscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(ResponseTransformer.<String>handleResult())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    LogUtil.d("register data", s);
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                                }
+                            }));
                 }
                 break;
             }

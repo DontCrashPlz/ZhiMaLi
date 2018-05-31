@@ -116,7 +116,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             @Override
                             public void accept(String str) throws Exception {
                                 dismissProgressDialog();
-                                LogUtil.d("register data", str);
+                                if (str != null) LogUtil.d("login data", str);
                                 MyApplication.getInstance().setToken(str);
                                 MyApplication.getInstance().refreshUser(null);
                                 finish();

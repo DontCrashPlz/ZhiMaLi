@@ -150,7 +150,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                                 .compose(ResponseTransformer.<String>handleResult())
                                 .subscribe(new Consumer<String>() {
                                     @Override
-                                    public void accept(String s) throws Exception {
+                                    public void accept(@Nullable String s) throws Exception {
                                         showShortToast("签到成功");
                                         mUserEntity.setSigned(1);
                                         mQianDaoBtn.setText("已签到");
@@ -187,7 +187,11 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_rly_tixian:{
-
+                if (isUserValid()){
+                    startActivity(new Intent(getRealContext(), TiXianActivity.class));
+                }else {//如果没有登录，跳转到登录界面
+                    showShortToast("请先登录");
+                }
                 break;
             }
             case R.id.mine_rly_invite_code:{

@@ -146,6 +146,9 @@ public class VedioDetailActivity extends BaseActivity {
                             mVideoUrl= newsDetailEntity.getVideo_url();
                             mImageUrl= newsDetailEntity.getPics().get(0);
                             viewId= newsDetailEntity.getView_id();
+                            mShareTitle= newsDetailEntity.getShare_title();
+                            mShareUrl= newsDetailEntity.getShare_url();
+
                             mVideoPlayer.setUp(mVideoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "");
                             Glide.with(getRealContext()).load(mImageUrl).into(mVideoPlayer.thumbImageView);
 
@@ -205,6 +208,9 @@ public class VedioDetailActivity extends BaseActivity {
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                             mVideoUrl= newsDetailEntity.getVideo_url();
                             mImageUrl= newsDetailEntity.getPics().get(0);
+                            mShareTitle= newsDetailEntity.getShare_title();
+                            mShareUrl= newsDetailEntity.getShare_url();
+
                             mVideoPlayer.setUp(mVideoUrl, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "");
                             Glide.with(getRealContext()).load(mImageUrl).into(mVideoPlayer.thumbImageView);
 

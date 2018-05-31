@@ -93,6 +93,7 @@ public class MyApplication extends BaseApplication {
             SharedPrefUtils.remove(getApplicationContext(), TOKEN_TAG);
         }
         SharedPrefUtils.put(getApplicationContext(), TOKEN_TAG, token);
+        appToken= token;
     }
     //app启动时加载本地保存的token,返回值表示是否加载成功
     public boolean loadLocalToken(){

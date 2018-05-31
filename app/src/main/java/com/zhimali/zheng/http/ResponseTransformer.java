@@ -61,6 +61,9 @@ public class ResponseTransformer {
             int code= tHttpResult.getCode();
             String message= tHttpResult.getMsg();
             if (code== 0){
+                if (tHttpResult.getData()== null){
+                    return (ObservableSource<T>) Observable.just("null");
+                }
                 return Observable.just(tHttpResult.getData());
             }
             return Observable.error(new ApiException(code, message));
