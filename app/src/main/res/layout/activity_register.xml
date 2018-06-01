@@ -48,7 +48,8 @@
             android:textColorHint="@color/textcolot_hint_gary"
             android:background="@null"
             android:layout_alignTop="@+id/login_text1"
-            android:layout_alignBottom="@+id/login_text1"/>
+            android:layout_alignBottom="@+id/login_text1"
+            android:inputType="number"/>
 
         <View
             android:layout_width="match_parent"
@@ -78,7 +79,8 @@
             android:textColorHint="@color/textcolot_hint_gary"
             android:background="@null"
             android:layout_alignTop="@+id/login_text2"
-            android:layout_alignBottom="@+id/login_text2"/>
+            android:layout_alignBottom="@+id/login_text2"
+            android:inputType="number"/>
         
         <Button
             android:id="@+id/register_btn_get"
@@ -124,7 +126,8 @@
             android:textColorHint="@color/textcolot_hint_gary"
             android:background="@null"
             android:layout_alignTop="@+id/login_text3"
-            android:layout_alignBottom="@+id/login_text3"/>
+            android:layout_alignBottom="@+id/login_text3"
+            android:inputType="textPassword"/>
 
         <View
             android:layout_width="match_parent"
@@ -155,7 +158,8 @@
             android:textColorHint="@color/textcolot_hint_gary"
             android:background="@null"
             android:layout_alignTop="@+id/login_text4"
-            android:layout_alignBottom="@+id/login_text4"/>
+            android:layout_alignBottom="@+id/login_text4"
+            android:inputType="textPassword"/>
 
         <View
             android:layout_width="match_parent"

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_page">
+
+    <include layout="@layout/layout_toolbar2" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的邀请码"
+            android:textSize="@dimen/textSize_15"
+            android:textColor="#555555"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/invite_tv_mycode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0000"
+            android:textColor="#3488fe"
+            android:textSize="36sp"
+            android:layout_gravity="right"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/invite_panel_bindable"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+        <EditText
+            android:id="@+id/invite_et_invitecode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:hint="绑定邀请码"
+            android:textColorHint="#bbbbbb"
+            android:textSize="@dimen/textSize_17"
+            android:gravity="center"
+            android:theme="@style/InviteEditText"/>
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/invite_panel_unbindable"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已绑定 "
+                android:textSize="@dimen/textSize_17"
+                android:textColor="#bbbbbb"/>
+            <TextView
+                android:id="@+id/invite_tv_invitecode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0000"
+                android:textSize="@dimen/textSize_17"
+                android:textColor="#3488fe"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 邀请码"
+                android:textSize="@dimen/textSize_17"
+                android:textColor="#bbbbbb"/>
+        </LinearLayout>
+    </FrameLayout>
+    
+    <Button
+        android:id="@+id/invite_btn_bind"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/background_button_blue_selector"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="70dp"
+        android:text="绑   定"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/textSize_15"
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -5,11 +5,21 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#bababa</item>
     </style>
 
     <style name="TabLayoutTextStyle" >
         <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="InviteEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#bababa</item>
+        <item name="colorControlActivated">#bababa</item>
+    </style>
+
+    <style name="dialog_no_title" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 </resources>

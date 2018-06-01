@@ -75,6 +75,12 @@
         <activity android:name=".module_mine.TiXianActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".module_mine.TiXianSuccessActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".module_mine.InviteCodeActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".module_mine.YueBiActivity"
             android:screenOrientation="portrait"/>
 

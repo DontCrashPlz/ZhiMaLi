@@ -2,7 +2,9 @@ package com.zhimali.zheng.http;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.zheng.zchlibrary.utils.LogUtil;
 import com.zhimali.zheng.apps.MyApplication;
 import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.CategoryEntity;
@@ -18,13 +20,17 @@ import com.zhimali.zheng.bean.PosterEntity;
 import com.zhimali.zheng.bean.UserEntity;
 import com.zhimali.zheng.bean.YueBiEntity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -145,10 +151,9 @@ public class Network {
 
     /**
      * 1 获取验证码
-     * @param context
      * @param mobile
      */
-    public Observable<HttpResult<String>> getYanZhengMa(final Context context, String mobile){
+    public Observable<HttpResult<String>> getYanZhengMa(String mobile){
         Map<String, String> params=
                 getBaseParamMap(NetParams.TAG_YANZHENGMA);
         params.put("mobile", mobile);
@@ -255,8 +260,18 @@ public class Network {
     /**
      * 8 修改头像
      */
-    public void changeHead(){
-
+    public Observable<HttpResult<String>> changeHead(String token, String filePath){
+        Map<String, String> params=
+                getBaseParamMap(NetParams.TAG_CHANGE_HEAD);
+        params.put("avatar", "image");
+        //1、根据地址拿到File
+        File file = new File(filePath);
+        LogUtil.d("图片绝对路径： ", file.getAbsolutePath());
+        //2、创建RequestBody，其中`multipart/form-data`为编码类型
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        //3、创建`MultipartBody.Part`，其中需要注意第一个参数`fileUpload`需要与服务器对应,也就是`键`
+//        MultipartBody.Part part = MultipartBody.Part.createFormData("fileUpload", file.getName(), requestFile);
+        return apiService.changeUserHead(token, params, requestFile);
     }
 
     /**

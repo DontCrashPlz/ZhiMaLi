@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_page">
+
+    <include layout="@layout/layout_toolbar2" />
+
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@mipmap/wait"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提现申请已提交"
+        android:textSize="@dimen/textSize_17"
+        android:textColor="#332d30"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请耐心等待结果"
+        android:textSize="@dimen/textSize_17"
+        android:textColor="#332d30"
+        android:layout_gravity="center_horizontal"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="预计审核时间"
+            android:textColor="#ababab"
+            android:textSize="@dimen/textSize_13"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2小时内"
+            android:textColor="#555555"
+            android:textSize="@dimen/textSize_15"
+            android:layout_gravity="center_vertical|right"/>
+    </FrameLayout>
+    
+    <Button
+        android:id="@+id/tixian_success_btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/background_button_blue_selector"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="70dp"
+        android:text="完成"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/textSize_15"/>
+
+</LinearLayout>

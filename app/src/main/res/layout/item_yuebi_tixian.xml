@@ -10,7 +10,7 @@
         android:id="@+id/item_yuebi_tixian_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="体现申请 10元"
+        android:text="提现申请 10元"
         android:textSize="@dimen/textSize_15"
         android:textColor="@color/textcolor_black"
         app:layout_constraintTop_toTopOf="parent"

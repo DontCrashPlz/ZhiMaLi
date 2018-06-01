@@ -108,7 +108,6 @@ public class NameSetActivity extends BaseActivity implements View.OnClickListene
                         }, new Action() {
                             @Override
                             public void run() throws Exception {
-                                dismissProgressDialog();
                             }
                         }, new Consumer<Disposable>() {
                             @Override

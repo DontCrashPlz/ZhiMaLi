@@ -89,24 +89,37 @@ public class FindPasswordActivity extends BaseActivity implements View.OnClickLi
                 String mobileNum= mPhoneEt.getText().toString();
                 if (mobileNum== null || mobileNum.length()!= 11){
                     showShortToast("请输入11位手机号码");
-                }else {
-                    addNetWork(Network.getInstance().getYanZhengMa(this, mobileNum)
-                            .subscribeOn(Schedulers.io())
-                            .unsubscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .compose(ResponseTransformer.<String>handleResult())
-                            .subscribe(new Consumer<String>() {
-                                @Override
-                                public void accept(String s) throws Exception {
-                                    LogUtil.d("register data", s);
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    showShortToast(HttpUtils.parseThrowableMsg(throwable));
-                                }
-                            }));
+                    return;
                 }
+                addNetWork(Network.getInstance().getYanZhengMa(mobileNum)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(ResponseTransformer.<String>handleResult())
+                        .subscribe(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("验证码已发送，请注意查看短信");
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.setLabel("正在获取验证码..");
+                                showProgressDialog();
+                            }
+                        }));
                 break;
             }
             case R.id.find_password_btn_confirm:{
@@ -164,11 +177,11 @@ public class FindPasswordActivity extends BaseActivity implements View.OnClickLi
                         }, new Action() {
                             @Override
                             public void run() throws Exception {
-                                dismissProgressDialog();
                             }
                         }, new Consumer<Disposable>() {
                             @Override
                             public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.setLabel("正在重置密码..");
                                 showProgressDialog();
                             }
                         }));

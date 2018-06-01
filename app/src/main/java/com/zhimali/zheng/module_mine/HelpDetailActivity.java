@@ -108,7 +108,6 @@ public class HelpDetailActivity extends BaseActivity implements View.OnClickList
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressDialog();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

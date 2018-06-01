@@ -97,7 +97,6 @@ public class BusinessActivity extends BaseActivity implements View.OnClickListen
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressDialog();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

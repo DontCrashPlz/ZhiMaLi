@@ -7,7 +7,8 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp">
+    android:paddingRight="15dp"
+    android:layout_marginTop="5dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_yuebi_fans_head"

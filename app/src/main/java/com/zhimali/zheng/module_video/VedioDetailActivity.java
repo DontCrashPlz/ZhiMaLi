@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.zheng.zchlibrary.apps.BaseActivity;
@@ -66,6 +67,8 @@ public class VedioDetailActivity extends BaseActivity {
     private WebView mWebView;
     private RecyclerView mRecycler;
     private PosterListAdapter mAdapter;
+
+    private boolean isCharged= false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +133,18 @@ public class VedioDetailActivity extends BaseActivity {
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webSetting.setSupportZoom(false);// 用于设置webview放大
         webSetting.setBuiltInZoomControls(false);
+        mWebView.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView webView, int i) {
+                LogUtil.d("onProgressChanged进度： ", "" + i);
+                super.onProgressChanged(webView, i);
+                if (i== 100){
+                    LogUtil.d("webview渲染完成： ", "onProgressChanged");
+                    dismissProgressDialog();
+                    if (MyApplication.getInstance().isHadUser() && !isCharged) charge();//渲染完成后请求计费接口
+                }
+            }
+        });
 
         if (MyApplication.getInstance().isHadUser()){//如果用户登录，使用appToken加载视频详情，并轮询计费接口
             //todo 请求新闻详情
@@ -140,7 +155,6 @@ public class VedioDetailActivity extends BaseActivity {
                     .subscribe(new Consumer<NewsDetailEntity>() {
                         @Override
                         public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
-                            dismissProgressDialog();
                             mTitleTv.setText(newsDetailEntity.getTitle());
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                             mVideoUrl= newsDetailEntity.getVideo_url();
@@ -164,35 +178,11 @@ public class VedioDetailActivity extends BaseActivity {
                     }, new Action() {
                         @Override
                         public void run() throws Exception {
-                            dismissProgressDialog();
                         }
                     }, new Consumer<Disposable>() {
                         @Override
                         public void accept(Disposable disposable) throws Exception {
                             showProgressDialog();
-                        }
-                    }));
-            //todo 请求计费接口
-            addNetWork(Observable.interval(5, 5, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .flatMap(new Function<Long, ObservableSource<HttpResult<String>>>() {
-                        @Override
-                        public ObservableSource<HttpResult<String>> apply(Long aLong) throws Exception {
-                            return Network.getInstance()
-                                    .doCharge(MyApplication.appToken, String.valueOf(viewId));
-                        }
-                    })
-                    .compose(ResponseTransformer.<String>handleResult())
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                            LogUtil.d("计费成功: ", s);
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            LogUtil.d("计费失败: ", throwable.toString());
                         }
                     }));
         }else{//如果没有用户登录，使用空appToken加载视频详情，不轮询计费接口
@@ -203,7 +193,6 @@ public class VedioDetailActivity extends BaseActivity {
                     .subscribe(new Consumer<NewsDetailEntity>() {
                         @Override
                         public void accept(NewsDetailEntity newsDetailEntity) throws Exception {
-                            dismissProgressDialog();
                             mTitleTv.setText(newsDetailEntity.getTitle());
                             mWebView.loadDataWithBaseURL(null, newsDetailEntity.getContent(), "text/html", "utf-8", null);
                             mVideoUrl= newsDetailEntity.getVideo_url();
@@ -226,7 +215,6 @@ public class VedioDetailActivity extends BaseActivity {
                     }, new Action() {
                         @Override
                         public void run() throws Exception {
-                            dismissProgressDialog();
                         }
                     }, new Consumer<Disposable>() {
                         @Override
@@ -277,5 +265,35 @@ public class VedioDetailActivity extends BaseActivity {
     public void initProgress() {
         mProgressDialog= new ProgressDialog(getRealContext());
         mProgressDialog.setLabel("正在加载页面..");
+    }
+
+    /**
+     * 请求计费接口
+     */
+    private void charge(){
+        //todo 请求计费接口
+        isCharged= true;
+        addNetWork(Observable.interval(5, 5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<Long, ObservableSource<HttpResult<String>>>() {
+                    @Override
+                    public ObservableSource<HttpResult<String>> apply(Long aLong) throws Exception {
+                        return Network.getInstance()
+                                .doCharge(MyApplication.appToken, String.valueOf(viewId));
+                    }
+                })
+                .compose(ResponseTransformer.<String>handleResult())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        LogUtil.d("计费成功: ", s);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtil.d("计费失败: ", throwable.toString());
+                    }
+                }));
     }
 }

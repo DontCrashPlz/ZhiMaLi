@@ -115,7 +115,6 @@ public class FansActivity extends BaseActivity implements
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressBar();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

@@ -13,6 +13,7 @@ public class HttpUtils {
             else if (exception.getCode()== 1001) return "网络数据解析错误";
             else if (exception.getCode()== 1002) return "网络连接失败，请检查网络";
             else if (exception.getCode()== 1003) return "网络协议错误";
+            else return exception.getDisplayMessage();
         }
         return "网络请求发生未知错误";
     }

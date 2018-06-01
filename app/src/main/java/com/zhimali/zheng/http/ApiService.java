@@ -18,9 +18,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.QueryMap;
 
 /**
@@ -59,8 +64,9 @@ public interface ApiService {
 
     //8 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editAvatar
     //设置头像请求方式为：multipart/form-data, 客户端需对图片预先进行无损压缩
-    @GET("/index.php")
-    Call changeUserHead(@Header("Xauth")String token, @QueryMap Map<String, String> params);
+    @Multipart
+    @POST("/index.php")
+    Observable<HttpResult<String>> changeUserHead(@Header("Xauth")String token, @QueryMap Map<String, String> params, @Part("image") RequestBody file);
 
     //9 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editMember
     @GET("/index.php")

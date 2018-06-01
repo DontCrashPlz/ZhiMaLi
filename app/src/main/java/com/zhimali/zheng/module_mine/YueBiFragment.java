@@ -106,7 +106,6 @@ public class YueBiFragment extends BaseFragment implements BaseQuickAdapter.Requ
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressBar();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

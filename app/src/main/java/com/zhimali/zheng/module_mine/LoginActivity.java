@@ -116,7 +116,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             @Override
                             public void accept(String str) throws Exception {
                                 dismissProgressDialog();
-                                if (str != null) LogUtil.d("login data", str);
+                                LogUtil.d("login data", str);
+                                showShortToast("登录成功");
                                 MyApplication.getInstance().setToken(str);
                                 MyApplication.getInstance().refreshUser(null);
                                 finish();
@@ -130,7 +131,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         }, new Action() {
                             @Override
                             public void run() throws Exception {
-                                dismissProgressDialog();
                             }
                         }, new Consumer<Disposable>() {
                             @Override
@@ -141,7 +141,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             }
             case R.id.login_btn_register:{
-                startActivity(new Intent(getRealContext(), RegisterActivity.class));
+                startActivityForResult(new Intent(getRealContext(), RegisterActivity.class), 100);
                 break;
             }
             case R.id.login_btn_weixin:{
@@ -152,5 +152,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 showShortToast("点击事件分发错误");
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode== 100 && resultCode== 200){
+            finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

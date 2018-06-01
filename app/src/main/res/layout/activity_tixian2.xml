@@ -141,7 +141,8 @@
                     android:textColor="#555555"
                     android:hint="请输入手机号码"
                     android:textColorHint="@color/textcolot_hint_gary"
-                    android:layout_marginLeft="20dp"/>
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -162,7 +163,8 @@
                     android:background="@null"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/tixian_btn_get"
-                    android:paddingRight="10dp"/>
+                    android:paddingRight="10dp"
+                    android:inputType="number"/>
                 <Button
                     android:id="@+id/tixian_btn_get"
                     android:layout_width="wrap_content"

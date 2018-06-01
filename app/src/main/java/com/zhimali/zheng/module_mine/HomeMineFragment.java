@@ -195,7 +195,11 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.mine_rly_invite_code:{
-
+                if (isUserValid()){
+                    startActivity(new Intent(getRealContext(), InviteCodeActivity.class));
+                }else {//如果没有登录，跳转到登录界面
+                    showShortToast("请先登录");
+                }
                 break;
             }
             default:
@@ -207,6 +211,8 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
+
+        LogUtil.d("MineFragment onResume: ", "done");
 
         if (MyApplication.getInstance().loadLocalToken()){
             addNetWork(MyApplication.getInstance().refreshUser(new IAsyncLoadListener<UserEntity>() {

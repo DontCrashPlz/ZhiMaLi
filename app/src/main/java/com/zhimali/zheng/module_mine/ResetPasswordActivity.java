@@ -18,9 +18,11 @@ import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Zheng on 2018/4/17.
@@ -88,9 +90,37 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
                 String mobileNum= mPhoneEt.getText().toString();
                 if (mobileNum== null || mobileNum.length()!= 11){
                     showShortToast("请输入11位手机号码");
-                }else {
-                    Network.getInstance().getYanZhengMa(this, mobileNum);
+                    return;
                 }
+                addNetWork(Network.getInstance().getYanZhengMa(mobileNum)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(ResponseTransformer.<String>handleResult())
+                        .subscribe(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast("验证码已发送，请注意查看短信");
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                dismissProgressDialog();
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+
+                            }
+                        }, new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.setLabel("正在获取验证码..");
+                                showProgressDialog();
+                            }
+                        }));
                 break;
             }
             case R.id.find_password_btn_confirm:{
@@ -148,11 +178,11 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
                         }, new Action() {
                             @Override
                             public void run() throws Exception {
-                                dismissProgressDialog();
                             }
                         }, new Consumer<Disposable>() {
                             @Override
                             public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.setLabel("正在提交..");
                                 showProgressDialog();
                             }
                         }));

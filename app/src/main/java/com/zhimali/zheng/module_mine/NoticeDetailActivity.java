@@ -107,7 +107,6 @@ public class NoticeDetailActivity extends BaseActivity implements View.OnClickLi
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressDialog();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

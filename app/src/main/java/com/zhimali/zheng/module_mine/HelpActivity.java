@@ -95,7 +95,6 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissProgressDialog();
                     }
                 }, new Consumer<Disposable>() {
                     @Override

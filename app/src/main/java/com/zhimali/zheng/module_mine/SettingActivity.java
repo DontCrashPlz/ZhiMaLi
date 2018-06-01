@@ -1,17 +1,27 @@
 package com.zhimali.zheng.module_mine;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zheng.zchlibrary.apps.BaseActivity;
+import com.zheng.zchlibrary.utils.DataCleanManager;
 import com.zheng.zchlibrary.utils.SharedPrefUtils;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.apps.MyApplication;
+
+import java.io.File;
 
 /**
  * Created by Zheng on 2018/4/19.
@@ -99,7 +109,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             }
             case R.id.setting_tv_clean:{
-                showShortToast("清除缓存弹窗");
+                showCleanCacheMenu();
                 break;
             }
             case R.id.setting_btn_logout:{
@@ -121,5 +131,41 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 showShortToast("点击事件分发错误");
                 break;
         }
+    }
+
+    /**
+     * 弹出清除缓存弹窗
+     */
+    private void showCleanCacheMenu(){
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_clean_cache, null);
+        // 设置style 控制默认dialog带来的边距问题
+        final Dialog dialog = new Dialog(this, R.style.dialog_no_title);
+        dialog.setContentView(view);
+        dialog.show();
+
+        // 确认按钮监听
+        view.findViewById(R.id.clean_cache_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                DataCleanManager.cleanAppCache(getRealContext());
+                showShortToast("缓存已清除");
+            }
+        });
+
+        // 取消按钮监听
+        view.findViewById(R.id.clean_cache_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        // 设置相关位置，一定要在 show()之后
+        Window window = dialog.getWindow();
+        window.getDecorView().setPadding(0, 0, 0, 20);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.gravity = Gravity.BOTTOM;
+        window.setAttributes(params);
     }
 }
