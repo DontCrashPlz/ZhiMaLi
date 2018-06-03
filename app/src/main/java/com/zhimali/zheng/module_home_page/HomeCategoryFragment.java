@@ -1,7 +1,9 @@
 package com.zhimali.zheng.module_home_page;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +32,7 @@ import io.reactivex.functions.Consumer;
  * Created by Zheng on 2018/4/27.
  */
 
-public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickAdapter.RequestLoadMoreListener {
+public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static HomeCategoryFragment newInstance(String cateId){
         HomeCategoryFragment instance = new HomeCategoryFragment();
@@ -43,6 +45,7 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     private String catid;
     private int mCurrentPage= 1;
 
+    private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecycler;
     private NewsListAdapter mAdapter;
 
@@ -70,6 +73,9 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
 
         View mView= inflater.inflate(R.layout.fragment_home_category, container, false);
 
+        mRefreshLayout= mView.findViewById(R.id.swiperefresh);
+        mRefreshLayout.setColorSchemeColors(Color.rgb(62,144,253));
+        mRefreshLayout.setOnRefreshListener(this);
         mRecycler= mView.findViewById(R.id.recyclerview);
         mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
         mRecycler.addItemDecoration(new MyNewsListItemDecoration(Tool.dp2px(getRealContext(), 15)));
@@ -142,5 +148,37 @@ public class HomeCategoryFragment extends LazyLoadFragment implements BaseQuickA
     @Override
     public void initProgressBar(View view) {
         mProgressBar= view.findViewById(R.id.progressBar);
+    }
+
+    @Override
+    public void onRefresh() {
+        mCurrentPage= 1;
+        addNetWork(
+                Network.getInstance().getNewsList(catid, String.valueOf(mCurrentPage), null)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<ArrayList<NewsListEntity>>() {
+                            @Override
+                            public void accept(ArrayList<NewsListEntity> newsListEntities) throws Exception {
+                                if (!isLoadedOnce){
+                                    isLoadedOnce= true;
+                                }
+                                if (newsListEntities.size()> 0){
+                                    mAdapter.setNewData(newsListEntities);
+                                    mRefreshLayout.setRefreshing(false);
+                                }else {
+                                    mRefreshLayout.setRefreshing(false);
+                                    if (mCurrentPage== 1){
+                                        mAdapter.setEmptyView(R.layout.layout_recycler_empty);
+                                    }
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                mRefreshLayout.setRefreshing(false);
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                            }
+                        }));
     }
 }

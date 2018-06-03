@@ -71,7 +71,7 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
 
     private void initUI(View mView) {
         mUserHeadCiv= mView.findViewById(R.id.mine_civ_yonghu);
-//        mUserHeadCiv.setOnClickListener(this);
+        mUserHeadCiv.setOnClickListener(this);
         mUserNameTv= mView.findViewById(R.id.mine_tv_username);
         mUserNameTv.setOnClickListener(this);
         mUserDetailIv= mView.findViewById(R.id.mine_iv_user_detail);
@@ -100,17 +100,20 @@ public class HomeMineFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         int vId= v.getId();
         switch (vId){
-//            case R.id.mine_civ_yonghu:{
-//                if (!isSignIn()){
-//                    showShortToast("请先登录");
-//                    return;
-//                }
-//                startActivity(new Intent(getRealContext(), UserDetailActivity.class));
-//                break;
-//            }
+            case R.id.mine_civ_yonghu:{
+                if (isUserValid()){
+                    //showShortToast("您已登录");
+                    startActivity(new Intent(getRealContext(), UserDetailActivity.class));
+                }else {
+                    showShortToast("请先登录");
+                }
+
+                break;
+            }
             case R.id.mine_tv_username:{
-                if (isUserValid()){//如果已登录，提示一下
-                    showShortToast("您已登录");
+                if (isUserValid()){
+                    //showShortToast("您已登录");
+                    startActivity(new Intent(getRealContext(), SettingActivity.class));
                 }else {//如果没有登录，跳转到登录界面
                     startActivity(new Intent(getRealContext(), LoginActivity.class));
                 }

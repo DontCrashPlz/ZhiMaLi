@@ -1,8 +1,10 @@
 package com.zhimali.zheng.module_video;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +31,7 @@ import io.reactivex.functions.Consumer;
  * Created by Zheng on 2018/4/19.
  */
 
-public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.RequestLoadMoreListener {
+public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static HomeVideoFragment newInstance(String content){
         HomeVideoFragment instance = new HomeVideoFragment();
@@ -40,6 +42,7 @@ public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.
     }
 
     private TextView mSearchTv;
+    private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecycler;
     private VedioListAdapter mAdapter;
 
@@ -63,6 +66,9 @@ public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.
                 startActivity(new Intent(getRealContext(), VedioSearchActivity.class));
             }
         });
+        mRefreshLayout= mView.findViewById(R.id.swiperefresh);
+        mRefreshLayout.setColorSchemeColors(Color.rgb(62,144,253));
+        mRefreshLayout.setOnRefreshListener(this);
         mRecycler= mView.findViewById(R.id.video_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(getRealContext()));
         mAdapter= new VedioListAdapter(R.layout.item_vedio_list);
@@ -116,7 +122,6 @@ public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.
                                 if (mCurrentPage== 1) showProgressBar();
                             }
                         }));
-
     }
 
     @Override
@@ -133,5 +138,35 @@ public class HomeVideoFragment extends BaseFragment implements BaseQuickAdapter.
     @Override
     public void initProgressBar(View view) {
         mProgressBar= view.findViewById(R.id.progressBar);
+    }
+
+    @Override
+    public void onRefresh() {
+        mCurrentPage= 1;
+        addNetWork(
+                Network.getInstance().getNewsList(String.valueOf(17), String.valueOf(mCurrentPage), null)
+                        .compose(ResponseTransformer.changeThread())
+                        .compose(ResponseTransformer.handleResult())
+                        .subscribe(new Consumer<ArrayList<NewsListEntity>>() {
+                            @Override
+                            public void accept(ArrayList<NewsListEntity> newsListEntities) throws Exception {
+                                dismissProgressBar();
+                                if (newsListEntities.size()> 0){
+                                    mAdapter.addData(newsListEntities);
+                                    mRefreshLayout.setRefreshing(false);
+                                }else {
+                                    mRefreshLayout.setRefreshing(false);
+                                    if (mCurrentPage== 1){
+                                        mAdapter.setEmptyView(R.layout.layout_recycler_empty);
+                                    }
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                mRefreshLayout.setRefreshing(false);
+                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
+                            }
+                        }));
     }
 }

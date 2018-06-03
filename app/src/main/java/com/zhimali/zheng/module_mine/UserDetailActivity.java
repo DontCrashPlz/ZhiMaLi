@@ -136,36 +136,36 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 break;
             }
             case R.id.user_detail_rly_head:{
-//                showSelectMenu();
-                addNetWork(Network.getInstance()
-                        .changeHead(MyApplication.appToken, getRealContext().getExternalFilesDir("")+"/test.jpeg")
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .compose(ResponseTransformer.<String>handleResult())
-                        .subscribe(new Consumer<String>() {
-                            @Override
-                            public void accept(String s) throws Exception {
-                                dismissProgressDialog();
-                                showShortToast("头像上传成功");
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                dismissProgressDialog();
-                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
-                            }
-                        }, new Action() {
-                            @Override
-                            public void run() throws Exception {
-
-                            }
-                        }, new Consumer<Disposable>() {
-                            @Override
-                            public void accept(Disposable disposable) throws Exception {
-                                showProgressDialog();
-                            }
-                        }));
+                showSelectMenu();
+//                addNetWork(Network.getInstance()
+//                        .changeHead(MyApplication.appToken, getRealContext().getExternalFilesDir("")+"/test.jpg")
+//                        .subscribeOn(Schedulers.io())
+//                        .unsubscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .compose(ResponseTransformer.<String>handleResult())
+//                        .subscribe(new Consumer<String>() {
+//                            @Override
+//                            public void accept(String s) throws Exception {
+//                                dismissProgressDialog();
+//                                showShortToast("头像上传成功");
+//                            }
+//                        }, new Consumer<Throwable>() {
+//                            @Override
+//                            public void accept(Throwable throwable) throws Exception {
+//                                dismissProgressDialog();
+//                                showShortToast(HttpUtils.parseThrowableMsg(throwable));
+//                            }
+//                        }, new Action() {
+//                            @Override
+//                            public void run() throws Exception {
+//
+//                            }
+//                        }, new Consumer<Disposable>() {
+//                            @Override
+//                            public void accept(Disposable disposable) throws Exception {
+//                                showProgressDialog();
+//                            }
+//                        }));
                 break;
             }
             case R.id.user_detail_rly_name:{
@@ -247,6 +247,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                                             .placeholder(R.mipmap.yonghu)
                                             .error(R.mipmap.yonghu)
                                             .into(mUserHeadCiv);
+                                    MyApplication.getInstance().refreshUser(null);
                                 }
                             }, new Consumer<Throwable>() {
                                 @Override

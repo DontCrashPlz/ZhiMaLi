@@ -66,7 +66,7 @@ public interface ApiService {
     //设置头像请求方式为：multipart/form-data, 客户端需对图片预先进行无损压缩
     @Multipart
     @POST("/index.php")
-    Observable<HttpResult<String>> changeUserHead(@Header("Xauth")String token, @QueryMap Map<String, String> params, @Part("image") RequestBody file);
+    Observable<HttpResult<String>> changeUserHead(@Header("Xauth")String token, @QueryMap Map<String, String> params, @Part MultipartBody.Part file);
 
     //9 http://www.52zhimali.com/index.php?m=mobile&c=member&a=editMember
     @GET("/index.php")
