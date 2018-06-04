@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--<style name="Theme.AppLauncher" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="android:windowBackground">@drawable/start_up</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+        <!--<item name="android:windowFullscreen">true</item>-->
+    <!--</style>-->
+
     <!--自定义dialog背景全透明无边框theme -->
     <style name="simple_dialog" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->

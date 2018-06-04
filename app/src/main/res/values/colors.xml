@@ -10,4 +10,6 @@
     <color name="background_button_blue">#3388fd</color>
     <color name="textcolor_black">#332d30</color>
     <color name="textcolot_hint_gary">#ababab</color>
+
+    <color name="indictor_selected_pink">#ff615d</color>
 </resources>

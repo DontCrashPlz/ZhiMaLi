@@ -9,8 +9,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.listener.OnBannerListener;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.NetworkUtil;
@@ -18,11 +28,13 @@ import com.zheng.zchlibrary.utils.Tools;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.AppBaseEntity;
 import com.zhimali.zheng.bean.HttpResult;
+import com.zhimali.zheng.bean.PosterEntity;
 import com.zhimali.zheng.http.ApiException;
 import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -49,10 +61,37 @@ public class SplashActivity extends BaseActivity {
 
     private Location location;
 
+    private FrameLayout mPanelFly;
+    private ImageView mPosterIv;
+    private TextView mTimerTv;
+    private ProgressBar mProgress;
+    private Button mPassBtn;
+
+    private ImageView mLogoIv;
+    private ImageView mNameIv;
+    private ImageView mRemarkIv;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        mPanelFly= findViewById(R.id.splash_panel);
+        mPosterIv= findViewById(R.id.splash_poster);
+        mTimerTv= findViewById(R.id.splash_timer);
+        mProgress= findViewById(R.id.splash_progress);
+        mPassBtn= findViewById(R.id.splash_pass);
+        mPassBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getRealContext(), HomeActivity.class));
+                finish();
+            }
+        });
+
+        mLogoIv= findViewById(R.id.splash_logo);
+        mNameIv= findViewById(R.id.splash_name);
+        mRemarkIv= findViewById(R.id.splash_remark);
 
         try {
             xVersion = Tools.getVersionName(getRealContext());
@@ -81,7 +120,7 @@ public class SplashActivity extends BaseActivity {
         final Observable<String> initObservable=
                 Network.getInstance().initApp(xVersion, uuid, brand, network, gps, screen)
                         .compose(ResponseTransformer.<String>handleResult());
-        final Observable<AppBaseEntity> getAppInfoObservable=
+         final Observable<AppBaseEntity> getAppInfoObservable=
                 Network.getInstance().getAppInfo()
                         .compose(ResponseTransformer.<AppBaseEntity>handleResult());
 
@@ -103,34 +142,97 @@ public class SplashActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Object>() {
+                .subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(@Nullable Object o) throws Exception {
-                        startActivity(new Intent(getRealContext(), HomeActivity.class));
-                        finish();
+                    public void accept(@Nullable String s) throws Exception {
+                        startPoster();
+//                        startActivity(new Intent(getRealContext(), HomeActivity.class));
+//                        finish();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         LogUtil.e("初始化请求失败：", throwable.toString());
                         showShortToast(HttpUtils.parseThrowableMsg(throwable));
-                        startActivity(new Intent(getRealContext(), HomeActivity.class));
-                        finish();
+                        startPoster();
+//                        startActivity(new Intent(getRealContext(), HomeActivity.class));
+//                        finish();
                     }
                 });
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(2000);
-//                    startActivity(new Intent(getRealContext(), HomeActivity.class));
-//                    finish();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+    }
+
+    private void startPoster(){
+        addNetWork(Network.getInstance().getPosterList("11")
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(ResponseTransformer.<ArrayList<PosterEntity>>handleResult())
+                .subscribe(new Consumer<ArrayList<PosterEntity>>() {
+                    @Override
+                    public void accept(final ArrayList<PosterEntity> posterEntities) throws Exception {
+                        if (posterEntities!= null && posterEntities.size()> 0){
+                            mPanelFly.setVisibility(View.VISIBLE);
+                            mLogoIv.setVisibility(View.GONE);
+                            mNameIv.setVisibility(View.GONE);
+                            mRemarkIv.setVisibility(View.GONE);
+                            Glide.with(getRealContext())
+                                    .load(posterEntities.get(0).getImg())
+                                    .asBitmap()
+                                    .into(mPosterIv);
+                            mPosterIv.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    startActivity(new Intent(getRealContext(), HomeActivity.class));
+                                    Intent intent= new Intent(getRealContext(), PosterActivity.class);
+                                    intent.putExtra("poster_url", posterEntities.get(0).getUrl());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            timerStart();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtil.d("广告列表加载失败: ", throwable.toString());
+                        startActivity(new Intent(getRealContext(), HomeActivity.class));
+                        finish();
+                    }
+                }));
+    }
+
+    private void timerStart(){
+        addNetWork(Observable.interval(30, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        mProgress.setProgress(aLong.intValue());
+                        if (aLong== 0){
+                            mTimerTv.setText("3s");
+                        }else if (aLong== 33){
+                            mTimerTv.setText("2s");
+                        }else if (aLong== 66){
+                            mTimerTv.setText("1s");
+                        }else if (aLong== 99){
+                            mTimerTv.setText("0s");
+                        }else if (aLong== 100){
+                            startActivity(new Intent(getRealContext(), HomeActivity.class));
+                            finish();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        LogUtil.d("倒计时错误：", throwable.toString());
+                        startActivity(new Intent(getRealContext(), HomeActivity.class));
+                        finish();
+                    }
+                }));
     }
 
     @Override
@@ -161,8 +263,7 @@ public class SplashActivity extends BaseActivity {
         }else {
             LogUtil.d("定位信息获取方式", provider);
             location= locationManager.getLastKnownLocation(provider);
-//            return "" + location.getLongitude() + "," + location.getLatitude();
-            return "";
+            return "" + location.getLongitude() + "," + location.getLatitude();
         }
     }
 

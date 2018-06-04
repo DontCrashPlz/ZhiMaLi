@@ -37,7 +37,9 @@
             <com.tencent.smtt.sdk.WebView
                 android:id="@+id/vedio_detail_webview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:background="@android:color/white" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/vedio_detail_recycler"
