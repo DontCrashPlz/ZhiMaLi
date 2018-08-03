@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
@@ -19,17 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.listener.OnBannerListener;
 import com.zheng.zchlibrary.apps.BaseActivity;
 import com.zheng.zchlibrary.utils.LogUtil;
 import com.zheng.zchlibrary.utils.NetworkUtil;
 import com.zheng.zchlibrary.utils.Tools;
 import com.zhimali.zheng.R;
 import com.zhimali.zheng.bean.AppBaseEntity;
-import com.zhimali.zheng.bean.HttpResult;
 import com.zhimali.zheng.bean.PosterEntity;
-import com.zhimali.zheng.http.ApiException;
 import com.zhimali.zheng.http.HttpUtils;
 import com.zhimali.zheng.http.Network;
 import com.zhimali.zheng.http.ResponseTransformer;
@@ -114,7 +109,8 @@ public class SplashActivity extends BaseActivity {
                 network = "3";
                 break;
         }
-        gps = getGpsInfo();
+        //gps = getGpsInfo();
+        gps="0,0";
         screen= MyApplication.sw + "," + MyApplication.sh;
 
         final Observable<String> initObservable=
