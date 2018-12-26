@@ -1,7 +1,5 @@
 package com.zhimali.zheng.http;
 
-import android.util.AndroidException;
-
 import com.zhimali.zheng.bean.HttpResult;
 
 import io.reactivex.Observable;
